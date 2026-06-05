@@ -844,7 +844,11 @@ document.getElementById('lv-ok').addEventListener('click',()=>{ document.getElem
 //  体力恢复 Timer
 // ══════════════════════════════════════════════════════════
 function tickStamina(){
-  if(state.stamina>=STAM_MAX){ renderHud(); return; }
+  if(state.stamina>=STAM_MAX){
+    state.lastRecoverTime=Date.now(); // 满体力时持续刷新基准，体力耗损后立即从现在起计30s
+    renderHud();
+    return;
+  }
   const elapsed=Date.now()-state.lastRecoverTime;
   const ticks=Math.floor(elapsed/RECOVER_MS);
   if(ticks>0){
