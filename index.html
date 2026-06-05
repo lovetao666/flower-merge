@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>梦幻花语</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --pk:#f5a0c0;--pk2:#d4779a;--pp:#c9a9e6;
+  --mt:#b8e0d0;--gd:#ffd166;--gd2:#e8a800;
+  --ik:#3a2d4a;--mu:#8a7a9a;--ln:#e8dff0;
+  --bg1:#fff5fb;--bg2:#f5edff;
+  --c1a:#b8e0d0;--c1b:#8dd0b8;
+  --c2a:#f5c8d8;--c2b:#f0a0c0;
+  --c3a:#f0d090;--c3b:#f0b860;
+  --c4a:#d0b0f0;--c4b:#b880e0;
+  --c5a:#f0a0e0;--c5b:#ff80b0;
+  --fba:#a8d8a0;--fbb:#70c080;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:linear-gradient(180deg,var(--bg1),var(--bg2));font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:var(--ik)}
+
+/* ── 竖屏布局 ── */
+#app{display:flex;flex-direction:column;width:100%;height:100%;max-width:480px;margin:0 auto;position:relative}
+
+/* HUD */
+#hud{flex-shrink:0;display:flex;align-items:center;gap:5px;padding:8px 10px;background:rgba(255,255,255,.75);backdrop-filter:blur(6px);border-bottom:1px solid var(--ln)}
+.avatar-ring{width:38px;height:38px;border-radius:50%;background:conic-gradient(var(--pk) calc(var(--xp-pct,60)*1%*3.6deg),var(--ln) 0);display:grid;place-items:center;flex-shrink:0}
+.avatar-inner{width:31px;height:31px;border-radius:50%;background:linear-gradient(135deg,var(--pk),var(--pp));display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;line-height:1}
+.avatar-inner .lv-num{font-size:11px;font-weight:800}
+.chip{display:flex;align-items:center;gap:2px;padding:3px 7px;border-radius:999px;background:rgba(255,255,255,.8);font-size:12px;font-weight:700;flex-shrink:0;white-space:nowrap}
+.chip .ico{font-size:13px}
+#stamina-bar-wrap{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0}
+#stamina-bar-wrap .label{font-size:9px;color:var(--mu)}
+#stamina-bar{height:6px;border-radius:3px;background:#eee;overflow:hidden}
+#stamina-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#ff8fa3,#ff4d6d);transition:width .3s}
+#stamina-text{font-size:9px;color:var(--mu)}
+
+/* 订单栏 */
+#orders-area{flex-shrink:0;display:flex;gap:4px;padding:5px 8px;background:rgba(255,255,255,.5)}
+.order-slot{flex:1;border-radius:10px;padding:5px 5px 4px;background:rgba(255,255,255,.7);border:1.5px solid var(--ln);display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;cursor:default;transition:.15s}
+.order-slot.ready{border-color:var(--pk);background:#fff0f6}
+.order-slot .order-need{display:flex;flex-wrap:wrap;justify-content:center;gap:2px}
+.order-slot .flower-req{width:22px;height:22px;border-radius:5px;display:grid;place-items:center;font-size:11px;position:relative;color:#fff;font-weight:700}
+.order-slot .flower-req .cnt{position:absolute;top:-4px;right:-4px;background:#fff;color:var(--ik);font-size:7px;font-weight:900;border-radius:999px;padding:0 2px;line-height:12px;border:1px solid var(--ln)}
+.order-slot .order-rwd{font-size:9px;color:var(--gd2);font-weight:700}
+.order-slot .order-btn{font-size:9px;padding:1px 6px;border-radius:999px;border:0;cursor:pointer;font-weight:700}
+.order-slot .order-btn.pending{background:#eee;color:var(--mu)}
+.order-slot .order-btn.ready{background:var(--pk);color:#fff}
+
+/* 合成盘 */
+#board-area{flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:4px 6px}
+#board{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;width:100%;max-width:420px;padding:5px;border-radius:14px;background:rgba(255,255,255,.45);border:2px solid #f0d8e8;touch-action:none;user-select:none}
+.cell{aspect-ratio:1;border-radius:7px;background:rgba(255,255,255,.55);border:1px dashed #e8dff0;display:grid;place-items:center;position:relative;font-size:9px;color:var(--mu);transition:background .12s,border-color .12s}
+.cell.has{border:1px solid var(--ln);background:#fff}
+.cell.highlight{background:#e8f8f0;border-color:var(--mt);border-style:solid}
+.cell.drag-over{background:#fff0f6;border-color:var(--pk);border-style:solid}
+.cell .item{width:100%;height:100%;border-radius:6px;display:grid;place-items:center;font-size:clamp(14px,3vw,20px);position:relative;user-select:none;cursor:grab;transition:transform .1s}
+.cell .item:active{cursor:grabbing}
+.item.c1{background:linear-gradient(135deg,var(--c1a),var(--c1b))}
+.item.c2{background:linear-gradient(135deg,var(--c2a),var(--c2b))}
+.item.c3{background:linear-gradient(135deg,var(--c3a),var(--c3b))}
+.item.c4{background:linear-gradient(135deg,var(--c4a),var(--c4b))}
+.item.c5{background:linear-gradient(135deg,var(--c5a),var(--c5b));box-shadow:0 0 8px rgba(240,128,176,.4)}
+.item.fb{background:linear-gradient(135deg,var(--fba),var(--fbb))}
+.item .lv-badge{position:absolute;top:-3px;right:-3px;width:13px;height:13px;border-radius:50%;background:#fff;color:var(--ik);font-size:7px;font-weight:900;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.item .max-badge{position:absolute;bottom:-2px;font-size:6px;color:var(--gd);text-shadow:0 0 3px #fff;font-weight:800}
+.item .fb-label{position:absolute;bottom:0;font-size:5px;color:#fff;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.3)}
+.item.fb .stamina-cost{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--pk);color:#fff;font-size:7px;border-radius:999px;padding:1px 4px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
+
+/* 幽灵拖拽元素 */
+#ghost{position:fixed;pointer-events:none;z-index:9999;opacity:.85;transition:none;transform:translate(-50%,-50%);display:none}
+#ghost .item{width:48px;height:48px;border-radius:8px;display:grid;place-items:center;font-size:22px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+
+/* Toast */
+#toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);background:rgba(42,31,56,.82);color:#fff;padding:8px 16px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:8888;text-align:center;max-width:80vw}
+#toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+/* 奖励弹窗 */
+#reward-modal{position:fixed;inset:0;z-index:7777;display:none;align-items:center;justify-content:center;background:rgba(42,31,56,.4);padding:20px}
+#reward-modal.show{display:flex}
+.reward-box{background:#fff;border-radius:22px;padding:24px 28px;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.18);min-width:240px}
+.reward-box h3{font-size:18px;margin-bottom:6px}
+.reward-box .reward-items{font-size:28px;margin:8px 0 4px}
+.reward-box .reward-nums{font-size:14px;color:var(--gd2);font-weight:700;margin-bottom:14px}
+.reward-box .reward-ok{border:0;background:var(--pk);color:#fff;font-size:14px;font-weight:700;border-radius:12px;padding:9px 28px;cursor:pointer}
+
+/* 浮动数字 */
+.float-num{position:fixed;pointer-events:none;font-size:15px;font-weight:800;z-index:8000;animation:floatUp .8s ease-out forwards}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-50px)}}
+
+/* 合成特效 */
+@keyframes mergePop{0%{transform:scale(1)}40%{transform:scale(1.35)}70%{transform:scale(.9)}100%{transform:scale(1)}}
+.merge-pop{animation:mergePop .35s ease-out}
+
+/* 体力恢复计时 */
+#stamina-timer{font-size:9px;color:var(--mu);text-align:right;padding-right:10px;padding-bottom:2px;flex-shrink:0}
+
+/* 升级弹窗 */
+#levelup-modal{position:fixed;inset:0;z-index:8500;display:none;align-items:center;justify-content:center;background:rgba(42,31,56,.5)}
+#levelup-modal.show{display:flex}
+.levelup-box{background:linear-gradient(135deg,var(--pk),var(--pp));border-radius:24px;padding:28px 36px;text-align:center;color:#fff;box-shadow:0 16px 40px rgba(0,0,0,.25)}
+.levelup-box h2{font-size:24px;margin-bottom:4px}
+.levelup-box p{font-size:13px;opacity:.9;margin-bottom:16px}
+.levelup-box button{border:2px solid rgba(255,255,255,.7);background:rgba(255,255,255,.2);color:#fff;font-size:14px;font-weight:700;border-radius:12px;padding:9px 28px;cursor:pointer}
+
+@media(max-width:360px){
+  #board{gap:2px;padding:3px}
+  .cell{border-radius:5px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="avatar-ring" id="avatar-ring">
+      <div class="avatar-inner">
+        <span>🌸</span>
+        <span class="lv-num" id="lv-num">1</span>
+      </div>
+    </div>
+    <div class="chip"><span class="ico">❤️</span><span id="stamina-val">100</span><span style="color:var(--mu);font-size:10px">/100</span></div>
+    <div id="stamina-bar-wrap">
+      <div id="stamina-bar"><div id="stamina-fill" style="width:100%"></div></div>
+      <div id="stamina-text">5分钟恢复1点</div>
+    </div>
+    <div class="chip"><span class="ico">🪙</span><span id="gold-val">0</span></div>
+    <div class="chip"><span class="ico">⭐</span><span id="exp-val">0</span></div>
+  </div>
+  <div id="stamina-timer"></div>
+
+  <!-- 订单栏 -->
+  <div id="orders-area"></div>
+
+  <!-- 合成盘 -->
+  <div id="board-area">
+    <div id="board"></div>
+  </div>
+
+</div>
+
+<!-- 幽灵 -->
+<div id="ghost"><div class="item" id="ghost-item"></div></div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- 奖励弹窗 -->
+<div id="reward-modal">
+  <div class="reward-box">
+    <h3>🎉 订单完成！</h3>
+    <div class="reward-items" id="reward-items"></div>
+    <div class="reward-nums" id="reward-nums"></div>
+    <button class="reward-ok" id="reward-ok">太棒了！</button>
+  </div>
+</div>
+
+<!-- 升级弹窗 -->
+<div id="levelup-modal">
+  <div class="levelup-box">
+    <h2>✨ 升级啦！</h2>
+    <p id="levelup-text">达到 Lv.2，体力已回满！</p>
+    <button id="levelup-ok">继续</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  配置常量
+// ═══════════════════════════════════════════════
+const ROWS = 9, COLS = 7, CELLS = ROWS * COLS;
+const MAX_FLOWER = 5;
+const STAMINA_MAX = 100;
+const STAMINA_COST = 5;          // 点花圃消耗
+const STAMINA_RECOVER_MS = 5 * 60 * 1000; // 5分钟
+const DEMO_RECOVER_MS = 30 * 1000;         // demo加速：30秒
+
+const FLOWER_NAMES = ['', '小花苗', '小花朵', '盛开花', '稀有花', '梦幻花'];
+const FLOWER_EMOJI = ['', '🌱', '🌸', '🌺', '🌷', '🌹'];
+const FLOWER_CLASS = ['', 'c1', 'c2', 'c3', 'c4', 'c5'];
+const GOLD_BY_LV  = [0, 5, 15, 40, 100, 250];
+const EXP_BY_LV   = [0, 2, 5, 12, 30, 80];
+const LV_EXP_NEED = [0, 0, 20, 50, 100, 200]; // index=level
+const LV_MAX = 5;
+
+// 订单需求等级范围（根据玩家等级）
+function orderMaxLv(playerLv){
+  if(playerLv <= 2) return 2;
+  if(playerLv <= 4) return 3;
+  return 4;
+}
+
+// ═══════════════════════════════════════════════
+//  游戏状态
+// ═══════════════════════════════════════════════
+const state = {
+  board: Array(CELLS).fill(null), // null | {type:'flower'|'fb', level:1-5, id}
+  stamina: STAMINA_MAX,
+  gold: 0,
+  exp: 0,
+  playerLevel: 1,
+  orders: [],    // [{id, demands:[{level,need,done}], gold, exp, status:'pending'|'ready'}]
+  nextId: 1,
+  lastRecoverTime: Date.now(),
+};
+
+// 初始花圃放置
+function initGame(){
+  state.board[7]  = {type:'fb', level:1, id:uid()};  // row1 col0
+  state.board[56] = {type:'fb', level:1, id:uid()};  // row8 col0
+  genOrders(3);
+}
+
+function uid(){ return state.nextId++; }
+
+// ═══════════════════════════════════════════════
+//  订单生成
+// ═══════════════════════════════════════════════
+function genOrder(){
+  const maxLv = orderMaxLv(state.playerLevel);
+  const count = Math.random() < 0.5 ? 1 : 2;
+  const demands = [];
+  for(let i=0;i<count;i++){
+    const lv = Math.floor(Math.random()*(maxLv))+1;
+    const need = Math.random() < 0.6 ? 1 : 2;
+    demands.push({level:lv, need, done:0});
+  }
+  let g=0, e=0;
+  demands.forEach(d=>{ g+=GOLD_BY_LV[d.level]*d.need; e+=EXP_BY_LV[d.level]*d.need; });
+  return {id:uid(), demands, gold:g, exp:e, status:'pending'};
+}
+
+function genOrders(n){
+  for(let i=0;i<n;i++) state.orders.push(genOrder());
+}
+
+// ═══════════════════════════════════════════════
+//  渲染
+// ═══════════════════════════════════════════════
+function renderHud(){
+  document.getElementById('stamina-val').textContent = state.stamina;
+  document.getElementById('gold-val').textContent = state.gold;
+  document.getElementById('exp-val').textContent = state.exp;
+  document.getElementById('lv-num').textContent = state.playerLevel;
+  const fill = (state.stamina / STAMINA_MAX * 100).toFixed(1);
+  document.getElementById('stamina-fill').style.width = fill + '%';
+  // EXP环
+  const curLvExp = LV_EXP_NEED[state.playerLevel] || 0;
+  const nextLvExp = LV_EXP_NEED[state.playerLevel + 1] || (LV_EXP_NEED[LV_MAX] + 1);
+  const pct = state.playerLevel >= LV_MAX ? 100
+    : Math.min(100, ((state.exp - curLvExp) / (nextLvExp - curLvExp) * 100));
+  document.getElementById('avatar-ring').style.background =
+    `conic-gradient(var(--pk) ${pct*3.6}deg, var(--ln) 0)`;
+}
+
+function renderOrders(){
+  const area = document.getElementById('orders-area');
+  area.innerHTML = '';
+  state.orders.forEach((order, idx) => {
+    checkOrderReady(order);
+    const slot = document.createElement('div');
+    slot.className = 'order-slot' + (order.status==='ready' ? ' ready' : '');
+    // 需求物品
+    const needDiv = document.createElement('div');
+    needDiv.className = 'order-need';
+    order.demands.forEach(d => {
+      const f = document.createElement('div');
+      f.className = 'flower-req';
+      f.style.background = `linear-gradient(135deg,var(--${FLOWER_CLASS[d.level]}a),var(--${FLOWER_CLASS[d.level]}b))`;
+      f.textContent = FLOWER_EMOJI[d.level];
+      if(d.need > 1 || d.done > 0){
+        const cnt = document.createElement('span');
+        cnt.className = 'cnt';
+        cnt.textContent = (d.done > 0 ? d.done+'/' : '') + d.need;
+        f.appendChild(cnt);
+      }
+      needDiv.appendChild(f);
+    });
+    slot.appendChild(needDiv);
+    // 奖励
+    const rwd = document.createElement('div');
+    rwd.className = 'order-rwd';
+    rwd.textContent = `🪙${order.gold} ⭐${order.exp}`;
+    slot.appendChild(rwd);
+    // 按钮
+    const btn = document.createElement('button');
+    btn.className = 'order-btn ' + order.status;
+    btn.textContent = order.status === 'ready' ? '✅ 完成' : '需求中';
+    if(order.status === 'ready'){
+      btn.addEventListener('click', ()=>completeOrder(idx));
+    }
+    slot.appendChild(btn);
+    area.appendChild(slot);
+  });
+}
+
+function renderBoard(){
+  const board = document.getElementById('board');
+  // 保留已有cell避免重绘闪烁
+  if(board.children.length !== CELLS){
+    board.innerHTML = '';
+    for(let i=0;i<CELLS;i++){
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.idx = i;
+      board.appendChild(cell);
+    }
+  }
+  for(let i=0;i<CELLS;i++){
+    const cell = board.children[i];
+    const item = state.board[i];
+    cell.classList.toggle('has', !!item);
+    // 清除旧内容
+    cell.innerHTML = '';
+    if(!item) continue;
+    const div = document.createElement('div');
+    if(item.type === 'fb'){
+      div.className = 'item fb';
+      div.textContent = '🌿';
+      div.dataset.cellIdx = i;
+      const lv = document.createElement('span');
+      lv.className = 'lv-badge'; lv.textContent = item.level;
+      div.appendChild(lv);
+      const lb = document.createElement('span');
+      lb.className = 'fb-label'; lb.textContent = '花圃';
+      div.appendChild(lb);
+    } else {
+      div.className = 'item ' + FLOWER_CLASS[item.level];
+      div.textContent = FLOWER_EMOJI[item.level];
+      div.dataset.cellIdx = i;
+      const lv = document.createElement('span');
+      lv.className = 'lv-badge'; lv.textContent = item.level;
+      div.appendChild(lv);
+      if(item.level >= MAX_FLOWER){
+        const mx = document.createElement('span');
+        mx.className = 'max-badge'; mx.textContent = 'MAX';
+        div.appendChild(mx);
+      }
+    }
+    cell.appendChild(div);
+  }
+}
+
+function render(){
+  renderHud();
+  renderOrders();
+  renderBoard();
+  bindDrag();
+}
+
+// ═══════════════════════════════════════════════
+//  拖拽系统（Pointer Events + releasePointerCapture）
+// ═══════════════════════════════════════════════
+let dragState = null;
+const ghost = document.getElementById('ghost');
+const ghostItem = document.getElementById('ghost-item');
+
+function bindDrag(){
+  document.querySelectorAll('#board .item').forEach(el => {
+    el.addEventListener('pointerdown', onPointerDown, {passive:false});
+  });
+}
+
+function onPointerDown(e){
+  e.preventDefault();
+  if(e.target.releasePointerCapture) e.target.releasePointerCapture(e.pointerId);
+  const cellIdx = parseInt(e.currentTarget.dataset.cellIdx);
+  const item = state.board[cellIdx];
+  if(!item) return;
+
+  // 花圃：点击产出
+  if(item.type === 'fb'){
+    harvestFlowerbed(cellIdx);
+    return;
+  }
+
+  // 满级不可拖到其他物品（但可以移动位置）
+  dragState = { fromCell: cellIdx, item, startX: e.clientX, startY: e.clientY };
+
+  // 显示幽灵
+  ghostItem.className = 'item ' + FLOWER_CLASS[item.level];
+  ghostItem.textContent = FLOWER_EMOJI[item.level];
+  ghost.style.left = e.clientX + 'px';
+  ghost.style.top  = e.clientY + 'px';
+  ghost.style.display = 'block';
+
+  document.addEventListener('pointermove', onPointerMove);
+  document.addEventListener('pointerup', onPointerUp);
+  document.addEventListener('pointercancel', onPointerCancel);
+}
+
+function getElementAtPoint(x, y){
+  ghost.style.display = 'none';
+  const el = document.elementFromPoint(x, y);
+  ghost.style.display = 'block';
+  return el;
+}
+
+function getCellIdxAtPoint(x, y){
+  const el = getElementAtPoint(x, y);
+  if(!el) return -1;
+  const cell = el.closest('.cell');
+  if(!cell) return -1;
+  return parseInt(cell.dataset.idx);
+}
+
+function onPointerMove(e){
+  if(!dragState) return;
+  ghost.style.left = e.clientX + 'px';
+  ghost.style.top  = e.clientY + 'px';
+
+  // 高亮目标格
+  document.querySelectorAll('.cell.drag-over').forEach(c=>c.classList.remove('drag-over'));
+  const ci = getCellIdxAtPoint(e.clientX, e.clientY);
+  if(ci >= 0 && ci !== dragState.fromCell){
+    document.querySelector(`#board .cell[data-idx="${ci}"]`)?.classList.add('drag-over');
+  }
+}
+
+function onPointerUp(e){
+  if(!dragState) return;
+  const ci = getCellIdxAtPoint(e.clientX, e.clientY);
+  endDrag();
+  if(ci < 0 || ci === dragState?.fromCell) return;
+
+  const from = dragState.fromCell;
+  const toItem = state.board[ci];
+
+  if(toItem && toItem.type !== 'fb'){
+    // 尝试合成
+    tryMerge(from, ci);
+  } else if(!toItem) {
+    // 移动到空格
+    state.board[ci] = state.board[from];
+    state.board[from] = null;
+    render();
+  }
+}
+
+// 由于 dragState 在 endDrag 中清空，先保存
+let _lastDragState = null;
+function onPointerDown2(e){} // unused
+
+function onPointerMove_patched(e){
+  if(!dragState) return;
+  ghost.style.left = e.clientX + 'px';
+  ghost.style.top  = e.clientY + 'px';
+  document.querySelectorAll('.cell.drag-over').forEach(c=>c.classList.remove('drag-over'));
+  const ci = getCellIdxAtPoint(e.clientX, e.clientY);
+  if(ci >= 0 && ci !== dragState.fromCell){
+    document.querySelector(`#board .cell[data-idx="${ci}"]`)?.classList.add('drag-over');
+  }
+}
+
+// 修复：在 endDrag 之前保存 fromCell
+function onPointerUp_fixed(e){
+  if(!dragState) return;
+  const from = dragState.fromCell;
+  const ci = getCellIdxAtPoint(e.clientX, e.clientY);
+  endDrag();
+  if(ci < 0 || ci === from) return;
+  const toItem = state.board[ci];
+  if(toItem && toItem.type !== 'fb'){
+    tryMerge(from, ci);
+  } else if(!toItem){
+    state.board[ci] = state.board[from];
+    state.board[from] = null;
+    render();
+  }
+}
+
+function onPointerCancel(){
+  endDrag();
+}
+
+function endDrag(){
+  ghost.style.display = 'none';
+  document.querySelectorAll('.cell.drag-over').forEach(c=>c.classList.remove('drag-over'));
+  document.removeEventListener('pointermove', onPointerMove);
+  document.removeEventListener('pointerup', onPointerUp);
+  document.removeEventListener('pointercancel', onPointerCancel);
+  dragState = null;
+}
+
+// ═══════════════════════════════════════════════
+//  合成逻辑
+// ═══════════════════════════════════════════════
+function tryMerge(fromIdx, toIdx){
+  const a = state.board[fromIdx];
+  const b = state.board[toIdx];
+  if(!a || !b) return;
+  if(a.type !== 'flower' || b.type !== 'flower'){
+    showToast('花圃不能合成哦');
+    return;
+  }
+  if(a.level !== b.level){
+    showToast('等级不同，无法合成');
+    return;
+  }
+  if(a.level >= MAX_FLOWER){
+    showToast('已是最高级，无法继续合成');
+    return;
+  }
+  // 合成！
+  const newLv = a.level + 1;
+  state.board[fromIdx] = null;
+  state.board[toIdx] = {type:'flower', level:newLv, id:uid()};
+  render();
+  // 合成动画
+  const cell = document.querySelector(`#board .cell[data-idx="${toIdx}"]`);
+  if(cell){
+    const item = cell.querySelector('.item');
+    if(item){ item.classList.remove('merge-pop'); void item.offsetWidth; item.classList.add('merge-pop'); }
+  }
+  spawnFloat(toIdx, `+${FLOWER_NAMES[newLv]}`, '#f5a0c0');
+  checkAllOrders();
+}
+
+// ═══════════════════════════════════════════════
+//  花圃产出
+// ═══════════════════════════════════════════════
+function harvestFlowerbed(fbIdx){
+  if(state.stamina < STAMINA_COST){
+    showToast('体力不足，休息一下再来吧 💤');
+    return;
+  }
+  // 找相邻空格
+  const row = Math.floor(fbIdx / COLS);
+  const col = fbIdx % COLS;
+  const neighbors = [];
+  [[-1,0],[1,0],[0,-1],[0,1]].forEach(([dr,dc])=>{
+    const r=row+dr, c=col+dc;
+    if(r>=0&&r<ROWS&&c>=0&&c<COLS){
+      const idx=r*COLS+c;
+      if(!state.board[idx]) neighbors.push(idx);
+    }
+  });
+  if(neighbors.length === 0){
+    showToast('周围没有空格，先合一些物品吧');
+    return;
+  }
+  // 扣体力
+  state.stamina = Math.max(0, state.stamina - STAMINA_COST);
+  // 产出到第一个空格
+  const targetIdx = neighbors[0];
+  state.board[targetIdx] = {type:'flower', level:1, id:uid()};
+  render();
+  spawnFloat(targetIdx, '+小花苗', '#8dd0b8');
+  checkAllOrders();
+}
+
+// ═══════════════════════════════════════════════
+//  订单系统
+// ═══════════════════════════════════════════════
+function checkOrderReady(order){
+  // 统计合成盘上的花
+  const available = {};
+  state.board.forEach(item=>{
+    if(item && item.type === 'flower'){
+      available[item.level] = (available[item.level]||0) + 1;
+    }
+  });
+  // 检查每个需求
+  let allMet = true;
+  order.demands.forEach(d=>{
+    const have = available[d.level] || 0;
+    if(have < d.need) allMet = false;
+  });
+  order.status = allMet ? 'ready' : 'pending';
+}
+
+function checkAllOrders(){
+  state.orders.forEach(o=>checkOrderReady(o));
+  renderOrders();
+}
+
+function completeOrder(idx){
+  const order = state.orders[idx];
+  if(!order || order.status !== 'ready') return;
+
+  // 从合成盘扣除物品
+  order.demands.forEach(d=>{
+    let need = d.need;
+    for(let i=0;i<CELLS&&need>0;i++){
+      const item = state.board[i];
+      if(item && item.type==='flower' && item.level===d.level){
+        state.board[i] = null;
+        need--;
+      }
+    }
+  });
+
+  // 奖励
+  state.gold += order.gold;
+  state.exp  += order.exp;
+
+  // 显示奖励弹窗
+  showReward(order.gold, order.exp);
+
+  // 刷新订单
+  state.orders.splice(idx, 1);
+  state.orders.push(genOrder());
+
+  // 检查升级
+  checkLevelUp();
+  render();
+}
+
+function showReward(gold, exp){
+  document.getElementById('reward-items').textContent = '🪙 金币 + ⭐ 经验';
+  document.getElementById('reward-nums').textContent = `+${gold} 金币   +${exp} 经验`;
+  const modal = document.getElementById('reward-modal');
+  modal.classList.add('show');
+}
+
+document.getElementById('reward-ok').addEventListener('click',()=>{
+  document.getElementById('reward-modal').classList.remove('show');
+});
+
+// ═══════════════════════════════════════════════
+//  升级
+// ═══════════════════════════════════════════════
+function checkLevelUp(){
+  if(state.playerLevel >= LV_MAX) return;
+  const need = LV_EXP_NEED[state.playerLevel + 1];
+  if(state.exp >= need){
+    state.playerLevel++;
+    state.stamina = STAMINA_MAX; // 回满体力
+    showLevelUp(state.playerLevel);
+  }
+}
+
+function showLevelUp(lv){
+  document.getElementById('levelup-text').textContent = `达到 Lv.${lv}，体力已回满！`;
+  document.getElementById('levelup-modal').classList.add('show');
+}
+
+document.getElementById('levelup-ok').addEventListener('click',()=>{
+  document.getElementById('levelup-modal').classList.remove('show');
+  render();
+});
+
+// ═══════════════════════════════════════════════
+//  体力恢复 Timer
+// ═══════════════════════════════════════════════
+const RECOVER_INTERVAL = DEMO_RECOVER_MS; // 30秒 demo加速
+
+function tickStamina(){
+  if(state.stamina >= STAMINA_MAX) {
+    document.getElementById('stamina-text').textContent = '已满';
+    document.getElementById('stamina-timer').textContent = '';
+    return;
+  }
+  const elapsed = Date.now() - state.lastRecoverTime;
+  const ticks = Math.floor(elapsed / RECOVER_INTERVAL);
+  if(ticks > 0){
+    state.stamina = Math.min(STAMINA_MAX, state.stamina + ticks);
+    state.lastRecoverTime += ticks * RECOVER_INTERVAL;
+    renderHud();
+  }
+  // 显示下次恢复倒计时
+  const remain = RECOVER_INTERVAL - ((Date.now() - state.lastRecoverTime) % RECOVER_INTERVAL);
+  const sec = Math.ceil(remain / 1000);
+  document.getElementById('stamina-text').textContent = `${sec}s后恢复`;
+  document.getElementById('stamina-timer').textContent = `(Demo加速：30秒恢复1体力)`;
+}
+
+setInterval(tickStamina, 1000);
+
+// ═══════════════════════════════════════════════
+//  UI 工具
+// ═══════════════════════════════════════════════
+let toastTimer = null;
+function showToast(msg, dur=2000){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+function spawnFloat(cellIdx, text, color){
+  const cell = document.querySelector(`#board .cell[data-idx="${cellIdx}"]`);
+  if(!cell) return;
+  const rect = cell.getBoundingClientRect();
+  const el = document.createElement('div');
+  el.className = 'float-num';
+  el.textContent = text;
+  el.style.color = color;
+  el.style.left = (rect.left + rect.width/2) + 'px';
+  el.style.top  = (rect.top + rect.height/2) + 'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 900);
+}
+
+// ═══════════════════════════════════════════════
+//  修复 onPointerUp 使用 dragState 已清空的问题
+// ═══════════════════════════════════════════════
+// 覆盖之前有 bug 的 onPointerUp，使用 onPointerUp_fixed
+document.removeEventListener('pointerup', onPointerUp);
+// 重新绑定在 bindDrag 内（下面重写）
+
+function bindDrag2(){
+  document.querySelectorAll('#board .item').forEach(el => {
+    // 清除旧监听
+    const clone = el.cloneNode(true);
+    el.parentNode.replaceChild(clone, el);
+    clone.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      if(e.target.releasePointerCapture) e.target.releasePointerCapture(e.pointerId);
+      const cellIdx = parseInt(e.currentTarget.dataset.cellIdx);
+      const item = state.board[cellIdx];
+      if(!item) return;
+
+      if(item.type === 'fb'){
+        harvestFlowerbed(cellIdx);
+        return;
+      }
+
+      dragState = { fromCell: cellIdx, item };
+      ghostItem.className = 'item ' + FLOWER_CLASS[item.level];
+      ghostItem.textContent = FLOWER_EMOJI[item.level];
+      ghost.style.left = e.clientX + 'px';
+      ghost.style.top  = e.clientY + 'px';
+      ghost.style.display = 'block';
+
+      function move(ev){
+        ghost.style.left = ev.clientX + 'px';
+        ghost.style.top  = ev.clientY + 'px';
+        document.querySelectorAll('.cell.drag-over').forEach(c=>c.classList.remove('drag-over'));
+        const ci = getCellIdxAtPoint2(ev.clientX, ev.clientY);
+        if(ci >= 0 && ci !== dragState?.fromCell){
+          document.querySelector(`#board .cell[data-idx="${ci}"]`)?.classList.add('drag-over');
+        }
+      }
+
+      function up(ev){
+        const from = dragState ? dragState.fromCell : cellIdx;
+        const ci = getCellIdxAtPoint2(ev.clientX, ev.clientY);
+        ghost.style.display = 'none';
+        document.querySelectorAll('.cell.drag-over').forEach(c=>c.classList.remove('drag-over'));
+        dragState = null;
+        document.removeEventListener('pointermove', move);
+        document.removeEventListener('pointerup', up);
+        document.removeEventListener('pointercancel', up);
+        if(ci < 0 || ci === from) return;
+        const toItem = state.board[ci];
+        if(toItem && toItem.type !== 'fb'){
+          tryMerge(from, ci);
+        } else if(!toItem){
+          state.board[ci] = state.board[from];
+          state.board[from] = null;
+          render();
+        }
+      }
+
+      document.addEventListener('pointermove', move);
+      document.addEventListener('pointerup', up);
+      document.addEventListener('pointercancel', up);
+    }, {passive:false});
+  });
+}
+
+function getCellIdxAtPoint2(x, y){
+  ghost.style.display = 'none';
+  const el = document.elementFromPoint(x, y);
+  ghost.style.display = 'block';
+  if(!el) return -1;
+  const cell = el.closest('.cell');
+  if(!cell) return -1;
+  return parseInt(cell.dataset.idx);
+}
+
+// 覆盖 bindDrag
+function bindDrag(){ bindDrag2(); }
+
+// ═══════════════════════════════════════════════
+//  启动
+// ═══════════════════════════════════════════════
+initGame();
+render();
+tickStamina();
+</script>
+</body>
+</html>
