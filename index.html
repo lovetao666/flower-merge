@@ -16,97 +16,199 @@
   --c3a:#f0d090;--c3b:#f0b860;
   --c4a:#d0b0f0;--c4b:#b880e0;
   --c5a:#f0a0e0;--c5b:#ff80b0;
+  --s1a:#c8e6a0;--s1b:#90c060;
+  --s2a:#a0d090;--s2b:#60b040;
+  --s3a:#70c070;--s3b:#40a040;
+  --s4a:#50b850;--s4b:#208020;
+  --s5a:#30a830;--s5b:#106810;
+  --t1a:#f0d8a0;--t1b:#d0b060;
+  --t2a:#e8c870;--t2b:#c09840;
+  --t3a:#e0b840;--t3b:#b08020;
+  --t4a:#d8a820;--t4b:#a07010;
+  --t5a:#d09800;--t5b:#906000;
   --fba:#a8d8a0;--fbb:#70c080;
 }
 html,body{width:100%;height:100%;overflow:hidden;background:linear-gradient(180deg,var(--bg1),var(--bg2));font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:var(--ik)}
 
-/* ── 竖屏布局 ── */
-#app{display:flex;flex-direction:column;width:100%;height:100%;max-width:480px;margin:0 auto;position:relative}
+/* ══ 页面容器 ══ */
+#app{display:flex;flex-direction:column;width:100%;height:100%;max-width:480px;margin:0 auto;position:relative;overflow:hidden}
 
-/* HUD */
-#hud{flex-shrink:0;display:flex;align-items:center;gap:5px;padding:8px 10px;background:rgba(255,255,255,.75);backdrop-filter:blur(6px);border-bottom:1px solid var(--ln)}
-.avatar-ring{width:38px;height:38px;border-radius:50%;background:conic-gradient(var(--pk) calc(var(--xp-pct,60)*1%*3.6deg),var(--ln) 0);display:grid;place-items:center;flex-shrink:0}
-.avatar-inner{width:31px;height:31px;border-radius:50%;background:linear-gradient(135deg,var(--pk),var(--pp));display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;line-height:1}
-.avatar-inner .lv-num{font-size:11px;font-weight:800}
-.chip{display:flex;align-items:center;gap:2px;padding:3px 7px;border-radius:999px;background:rgba(255,255,255,.8);font-size:12px;font-weight:700;flex-shrink:0;white-space:nowrap}
-.chip .ico{font-size:13px}
-#stamina-bar-wrap{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0}
-#stamina-bar-wrap .label{font-size:9px;color:var(--mu)}
-#stamina-bar{height:6px;border-radius:3px;background:#eee;overflow:hidden}
-#stamina-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#ff8fa3,#ff4d6d);transition:width .3s}
-#stamina-text{font-size:9px;color:var(--mu)}
+/* ══ 顶部 HUD ══ */
+#hud{flex-shrink:0;display:flex;align-items:center;gap:4px;padding:6px 8px;background:rgba(255,255,255,.85);backdrop-filter:blur(6px);border-bottom:1px solid var(--ln);z-index:100}
+.avatar-ring{width:36px;height:36px;border-radius:50%;flex-shrink:0;position:relative;cursor:default}
+.avatar-ring svg{position:absolute;inset:0;width:100%;height:100%}
+.avatar-inner{position:absolute;inset:3px;border-radius:50%;background:linear-gradient(135deg,var(--pk),var(--pp));display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;line-height:1}
+.avatar-inner .lv-n{font-size:10px;font-weight:900}
+.chip{display:flex;align-items:center;gap:2px;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,.85);font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;border:1px solid var(--ln)}
+#hp-wrap{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+#hp-bar{height:5px;border-radius:3px;background:#eed;overflow:hidden}
+#hp-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#ff8fa3,#ff4d6d);transition:width .3s}
+#hp-txt{font-size:8px;color:var(--mu)}
+.chip-dia{background:linear-gradient(135deg,#e0f0ff,#b8d8ff);border-color:#a0c8f8}
 
-/* 订单栏 */
-#orders-area{flex-shrink:0;display:flex;gap:4px;padding:5px 8px;background:rgba(255,255,255,.5)}
-.order-slot{flex:1;border-radius:10px;padding:5px 5px 4px;background:rgba(255,255,255,.7);border:1.5px solid var(--ln);display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;cursor:default;transition:.15s}
-.order-slot.ready{border-color:var(--pk);background:#fff0f6}
-.order-slot .order-need{display:flex;flex-wrap:wrap;justify-content:center;gap:2px}
-.order-slot .flower-req{width:22px;height:22px;border-radius:5px;display:grid;place-items:center;font-size:11px;position:relative;color:#fff;font-weight:700}
-.order-slot .flower-req .cnt{position:absolute;top:-4px;right:-4px;background:#fff;color:var(--ik);font-size:7px;font-weight:900;border-radius:999px;padding:0 2px;line-height:12px;border:1px solid var(--ln)}
-.order-slot .order-rwd{font-size:9px;color:var(--gd2);font-weight:700}
-.order-slot .order-btn{font-size:9px;padding:1px 6px;border-radius:999px;border:0;cursor:pointer;font-weight:700}
-.order-slot .order-btn.pending{background:#eee;color:var(--mu)}
-.order-slot .order-btn.ready{background:var(--pk);color:#fff}
+/* ══ 订单栏 ══ */
+#orders-wrap{flex-shrink:0;background:rgba(255,255,255,.6);border-bottom:1px solid var(--ln)}
+#orders-row{display:flex;gap:3px;padding:4px 6px;overflow-x:auto;scrollbar-width:none}
+#orders-row::-webkit-scrollbar{display:none}
+.ord{flex:0 0 auto;width:calc(33.3% - 4px);min-width:100px;border-radius:10px;padding:4px 5px;background:rgba(255,255,255,.8);border:1.5px solid var(--ln);display:flex;flex-direction:column;align-items:center;gap:1px;transition:.15s}
+.ord.ready{border-color:var(--pk);background:#fff0f6}
+.ord.timed{border-color:var(--gd);background:#fffbe6}
+.ord.timed.ready{border-color:#ff8800;background:#fff3e0}
+.ord-needs{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;min-height:22px;align-items:center}
+.flower-chip{width:22px;height:22px;border-radius:5px;display:grid;place-items:center;font-size:10px;color:#fff;position:relative;font-weight:700}
+.flower-chip .fc{position:absolute;top:-4px;right:-4px;background:#fff;color:var(--ik);font-size:6px;font-weight:900;border-radius:999px;padding:0 2px;line-height:11px;border:1px solid #ddd;white-space:nowrap}
+.ord-rwd{font-size:8px;color:var(--gd2);font-weight:700}
+.ord-timer{font-size:8px;color:#ff8800;font-weight:700}
+.ord-btn{font-size:8px;padding:1px 7px;border-radius:999px;border:0;cursor:pointer;font-weight:700;white-space:nowrap}
+.ord-btn.pending{background:#eee;color:var(--mu)}
+.ord-btn.ready{background:var(--pk);color:#fff}
+.ord-btn.timed-ready{background:#ff8800;color:#fff}
+.ord-label{font-size:7px;padding:1px 4px;border-radius:999px;font-weight:700;background:var(--gd);color:#7a4a00;margin-bottom:1px}
 
-/* 合成盘 */
-#board-area{flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:4px 6px}
-#board{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;width:100%;max-width:420px;padding:5px;border-radius:14px;background:rgba(255,255,255,.45);border:2px solid #f0d8e8;touch-action:none;user-select:none}
-.cell{aspect-ratio:1;border-radius:7px;background:rgba(255,255,255,.55);border:1px dashed #e8dff0;display:grid;place-items:center;position:relative;font-size:9px;color:var(--mu);transition:background .12s,border-color .12s}
+/* ══ 主内容区域（tabs） ══ */
+#main-content{flex:1;overflow:hidden;position:relative}
+.tab-page{position:absolute;inset:0;overflow:hidden;display:none;flex-direction:column}
+.tab-page.active{display:flex}
+
+/* ══ 合成盘页 ══ */
+#board-area{flex:1;display:flex;align-items:center;justify-content:center;padding:4px 6px;overflow:hidden}
+#board{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;width:100%;padding:4px;border-radius:12px;background:rgba(255,255,255,.5);border:2px solid #f0d8e8;touch-action:none;user-select:none}
+.cell{aspect-ratio:1;border-radius:6px;background:rgba(255,255,255,.55);border:1px dashed #e0d4f0;display:grid;place-items:center;position:relative;transition:background .1s,border-color .1s}
 .cell.has{border:1px solid var(--ln);background:#fff}
-.cell.highlight{background:#e8f8f0;border-color:var(--mt);border-style:solid}
-.cell.drag-over{background:#fff0f6;border-color:var(--pk);border-style:solid}
-.cell .item{width:100%;height:100%;border-radius:6px;display:grid;place-items:center;font-size:clamp(14px,3vw,20px);position:relative;user-select:none;cursor:grab;transition:transform .1s}
-.cell .item:active{cursor:grabbing}
+.cell.drag-over{background:#ffe8f4;border:1.5px solid var(--pk)}
+
+.item{width:100%;height:100%;border-radius:5px;display:grid;place-items:center;font-size:clamp(12px,2.8vw,18px);position:relative;user-select:none;cursor:grab}
 .item.c1{background:linear-gradient(135deg,var(--c1a),var(--c1b))}
 .item.c2{background:linear-gradient(135deg,var(--c2a),var(--c2b))}
 .item.c3{background:linear-gradient(135deg,var(--c3a),var(--c3b))}
 .item.c4{background:linear-gradient(135deg,var(--c4a),var(--c4b))}
-.item.c5{background:linear-gradient(135deg,var(--c5a),var(--c5b));box-shadow:0 0 8px rgba(240,128,176,.4)}
+.item.c5{background:linear-gradient(135deg,var(--c5a),var(--c5b));box-shadow:0 0 6px rgba(240,128,176,.4)}
+.item.s1{background:linear-gradient(135deg,var(--s1a),var(--s1b))}
+.item.s2{background:linear-gradient(135deg,var(--s2a),var(--s2b))}
+.item.s3{background:linear-gradient(135deg,var(--s3a),var(--s3b))}
+.item.s4{background:linear-gradient(135deg,var(--s4a),var(--s4b))}
+.item.s5{background:linear-gradient(135deg,var(--s5a),var(--s5b))}
+.item.t1{background:linear-gradient(135deg,var(--t1a),var(--t1b))}
+.item.t2{background:linear-gradient(135deg,var(--t2a),var(--t2b))}
+.item.t3{background:linear-gradient(135deg,var(--t3a),var(--t3b))}
+.item.t4{background:linear-gradient(135deg,var(--t4a),var(--t4b))}
+.item.t5{background:linear-gradient(135deg,var(--t5a),var(--t5b))}
 .item.fb{background:linear-gradient(135deg,var(--fba),var(--fbb))}
-.item .lv-badge{position:absolute;top:-3px;right:-3px;width:13px;height:13px;border-radius:50%;background:#fff;color:var(--ik);font-size:7px;font-weight:900;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.12)}
-.item .max-badge{position:absolute;bottom:-2px;font-size:6px;color:var(--gd);text-shadow:0 0 3px #fff;font-weight:800}
-.item .fb-label{position:absolute;bottom:0;font-size:5px;color:#fff;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.3)}
-.item.fb .stamina-cost{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--pk);color:#fff;font-size:7px;border-radius:999px;padding:1px 4px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
+.item .lv-b{position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-radius:50%;background:#fff;color:var(--ik);font-size:6px;font-weight:900;display:grid;place-items:center;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.item .mx-b{position:absolute;bottom:0px;font-size:5px;color:var(--gd);font-weight:900;text-shadow:0 0 3px #fff}
+.item .fb-lb{position:absolute;bottom:1px;font-size:5px;color:#fff;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.3)}
 
-/* 幽灵拖拽元素 */
-#ghost{position:fixed;pointer-events:none;z-index:9999;opacity:.85;transition:none;transform:translate(-50%,-50%);display:none}
-#ghost .item{width:48px;height:48px;border-radius:8px;display:grid;place-items:center;font-size:22px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+/* ══ 花园页 ══ */
+#garden-page{background:linear-gradient(180deg,#e8f5e0,#d8ecf8);overflow-y:auto}
+#garden-header{flex-shrink:0;display:flex;align-items:center;padding:8px 12px;gap:8px;background:rgba(255,255,255,.7);border-bottom:1px solid var(--ln)}
+#garden-header h2{flex:1;font-size:15px}
+#garden-gold-chip{font-size:11px;font-weight:700;color:var(--gd2)}
+#zones-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px}
+.zone-card{border-radius:14px;padding:10px;background:rgba(255,255,255,.75);border:1.5px solid var(--ln);cursor:pointer;transition:.15s;position:relative}
+.zone-card:active{transform:scale(.97)}
+.zone-card.locked{background:rgba(200,200,200,.4);border-color:#ccc;cursor:default}
+.zone-card.locked:active{transform:none}
+.zone-card h3{font-size:12px;font-weight:700;margin-bottom:4px}
+.zone-card .zone-sub{font-size:9px;color:var(--mu)}
+.zone-card .zone-prog{height:4px;border-radius:2px;background:#eee;margin-top:5px;overflow:hidden}
+.zone-card .zone-prog-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--mt),#4cc88a);transition:width .3s}
+.zone-card .lock-badge{position:absolute;top:8px;right:8px;font-size:10px;background:rgba(0,0,0,.12);padding:1px 5px;border-radius:999px;color:#555;font-size:8px}
+.zone-card .zone-emoji{font-size:22px;margin-bottom:4px}
 
-/* Toast */
-#toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);background:rgba(42,31,56,.82);color:#fff;padding:8px 16px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:8888;text-align:center;max-width:80vw}
-#toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+/* 区域详情覆盖层 */
+#zone-detail{position:absolute;inset:0;background:linear-gradient(180deg,#e8f5e0,#d8ecf8);display:none;flex-direction:column;z-index:50;overflow:hidden}
+#zone-detail.show{display:flex}
+#zd-header{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(255,255,255,.8);border-bottom:1px solid var(--ln)}
+#zd-back{font-size:18px;cursor:pointer;padding:2px 6px;border-radius:8px;background:rgba(255,255,255,.7)}
+#zd-title{flex:1;font-size:14px;font-weight:700}
+#zd-gold{font-size:11px;font-weight:700;color:var(--gd2)}
+#zd-prog-bar{flex-shrink:0;padding:6px 12px;background:rgba(255,255,255,.6)}
+#zd-prog-bar .lbl{font-size:9px;color:var(--mu);margin-bottom:3px}
+#zd-prog-track{height:6px;border-radius:3px;background:#ddd;overflow:hidden}
+#zd-prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--mt),#4cc88a);transition:width .3s}
+#tiles-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px}
+.tile-card{border-radius:12px;padding:8px;background:rgba(255,255,255,.8);border:1.5px solid var(--ln);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:.15s;min-height:80px;justify-content:center}
+.tile-card:active{transform:scale(.96)}
+.tile-card.wrecked{background:rgba(180,160,130,.25);border-color:#c8b090}
+.tile-card.cleaned{background:rgba(200,240,200,.5);border-color:#90c880}
+.tile-card.arranged{background:rgba(240,255,240,.8);border-color:#70b860;cursor:default}
+.tile-card.arranged:active{transform:none}
+.tile-card .tile-emoji{font-size:24px}
+.tile-card .tile-state{font-size:8px;color:var(--mu)}
+.tile-card .tile-btn{font-size:9px;padding:2px 8px;border-radius:999px;border:0;cursor:pointer;font-weight:700;white-space:nowrap;margin-top:2px}
+.tile-btn.cleanup{background:var(--mt);color:#2a6040}
+.tile-btn.arrange{background:var(--pk);color:#fff}
+.tile-btn.disabled{background:#ddd;color:#999;cursor:default}
+.tile-card .tile-name{font-size:8px;font-weight:700;text-align:center}
 
-/* 奖励弹窗 */
-#reward-modal{position:fixed;inset:0;z-index:7777;display:none;align-items:center;justify-content:center;background:rgba(42,31,56,.4);padding:20px}
-#reward-modal.show{display:flex}
-.reward-box{background:#fff;border-radius:22px;padding:24px 28px;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.18);min-width:240px}
-.reward-box h3{font-size:18px;margin-bottom:6px}
-.reward-box .reward-items{font-size:28px;margin:8px 0 4px}
-.reward-box .reward-nums{font-size:14px;color:var(--gd2);font-weight:700;margin-bottom:14px}
-.reward-box .reward-ok{border:0;background:var(--pk);color:#fff;font-size:14px;font-weight:700;border-radius:12px;padding:9px 28px;cursor:pointer}
+/* ══ 活动页 (P2) ══ */
+#activity-page{overflow-y:auto;padding:10px;gap:8px;flex-direction:column}
+.act-card{border-radius:14px;padding:12px;background:rgba(255,255,255,.85);border:1.5px solid var(--ln)}
+.act-card h3{font-size:13px;margin-bottom:4px}
+.act-card .act-desc{font-size:11px;color:var(--mu);margin-bottom:8px}
+.act-badge{display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;font-weight:700;margin-bottom:4px}
+.act-badge.active{background:linear-gradient(135deg,var(--pk),var(--pp));color:#fff}
+.act-badge.coming{background:#eee;color:var(--mu)}
+.act-prog{font-size:10px;margin:4px 0}
+.act-bar{height:6px;border-radius:3px;background:#eee;margin-bottom:4px;overflow:hidden}
+.act-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--pk),var(--pp));transition:width .3s}
 
-/* 浮动数字 */
-.float-num{position:fixed;pointer-events:none;font-size:15px;font-weight:800;z-index:8000;animation:floatUp .8s ease-out forwards}
-@keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-50px)}}
+/* ══ 底部导航 ══ */
+#bottom-nav{flex-shrink:0;display:flex;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);border-top:1px solid var(--ln);height:52px}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;border:0;background:none;color:var(--mu);transition:.15s;font-size:9px}
+.nav-btn .nav-ico{font-size:20px;line-height:1}
+.nav-btn.active{color:var(--pk2)}
+.nav-btn.active .nav-ico{filter:drop-shadow(0 1px 3px var(--pk))}
 
-/* 合成特效 */
-@keyframes mergePop{0%{transform:scale(1)}40%{transform:scale(1.35)}70%{transform:scale(.9)}100%{transform:scale(1)}}
-.merge-pop{animation:mergePop .35s ease-out}
+/* ══ 幽灵拖拽 ══ */
+#ghost{position:fixed;pointer-events:none;z-index:9999;opacity:.85;transform:translate(-50%,-50%);display:none}
+#ghost-item{width:44px;height:44px;border-radius:8px;display:grid;place-items:center;font-size:20px;box-shadow:0 4px 14px rgba(0,0,0,.22)}
 
-/* 体力恢复计时 */
-#stamina-timer{font-size:9px;color:var(--mu);text-align:right;padding-right:10px;padding-bottom:2px;flex-shrink:0}
+/* ══ Toast ══ */
+#toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(42,31,56,.85);color:#fff;padding:7px 16px;border-radius:10px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:9800;text-align:center;max-width:82vw;white-space:pre-line}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* 升级弹窗 */
-#levelup-modal{position:fixed;inset:0;z-index:8500;display:none;align-items:center;justify-content:center;background:rgba(42,31,56,.5)}
-#levelup-modal.show{display:flex}
-.levelup-box{background:linear-gradient(135deg,var(--pk),var(--pp));border-radius:24px;padding:28px 36px;text-align:center;color:#fff;box-shadow:0 16px 40px rgba(0,0,0,.25)}
-.levelup-box h2{font-size:24px;margin-bottom:4px}
-.levelup-box p{font-size:13px;opacity:.9;margin-bottom:16px}
-.levelup-box button{border:2px solid rgba(255,255,255,.7);background:rgba(255,255,255,.2);color:#fff;font-size:14px;font-weight:700;border-radius:12px;padding:9px 28px;cursor:pointer}
+/* ══ 弹窗基础 ══ */
+.modal-mask{position:fixed;inset:0;z-index:8000;display:none;align-items:center;justify-content:center;background:rgba(42,31,56,.45);padding:20px}
+.modal-mask.show{display:flex}
+.modal-box{background:#fff;border-radius:22px;padding:22px 26px;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.2);min-width:220px;max-width:340px;width:100%}
+.modal-box h3{font-size:16px;margin-bottom:6px}
+.modal-box .modal-sub{font-size:12px;color:var(--mu);margin-bottom:14px;line-height:1.6}
+.modal-ok{border:0;background:var(--pk);color:#fff;font-size:13px;font-weight:700;border-radius:11px;padding:8px 26px;cursor:pointer}
+
+/* ══ 升级弹窗 ══ */
+#levelup-modal .modal-box{background:linear-gradient(135deg,var(--pk),var(--pp));color:#fff}
+#levelup-modal .modal-box h3{color:#fff;font-size:20px}
+#levelup-modal .modal-box .modal-sub{color:rgba(255,255,255,.9)}
+#levelup-modal .modal-ok{background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.6)}
+
+/* ══ 解锁弹窗 ══ */
+#unlock-modal .modal-box{border:2px solid var(--gd)}
+#unlock-modal .modal-box h3{color:var(--gd2)}
+
+/* ══ 奖励弹窗 ══ */
+#reward-modal .reward-big{font-size:26px;margin:8px 0 4px}
+#reward-modal .reward-nums{font-size:13px;font-weight:700;color:var(--gd2);margin-bottom:14px}
+
+/* ══ 浮动飘字 ══ */
+.float-txt{position:fixed;pointer-events:none;font-size:14px;font-weight:800;z-index:9000;animation:ftUp .9s ease-out forwards}
+@keyframes ftUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-52px)}}
+
+/* ══ 合成弹动 ══ */
+@keyframes popBounce{0%{transform:scale(1)}40%{transform:scale(1.4)}70%{transform:scale(.88)}100%{transform:scale(1)}}
+.pop{animation:popBounce .35s ease-out}
+
+/* ══ 清理动画 ══ */
+@keyframes cleanAnim{0%{opacity:1;filter:brightness(.6)}60%{filter:brightness(1.3)}100%{opacity:1;filter:brightness(1)}}
+.cleaning{animation:cleanAnim .6s ease-out}
+
+/* ══ 体力恢复提示 ══ */
+#stamina-recover-hint{font-size:8px;color:var(--mu);text-align:center;padding:1px 8px;flex-shrink:0}
 
 @media(max-width:360px){
-  #board{gap:2px;padding:3px}
-  .cell{border-radius:5px}
+  #board{gap:1px;padding:3px}
+  .cell{border-radius:4px}
+  .ord{min-width:88px}
 }
 </style>
 </head>
@@ -116,672 +218,915 @@ html,body{width:100%;height:100%;overflow:hidden;background:linear-gradient(180d
   <!-- HUD -->
   <div id="hud">
     <div class="avatar-ring" id="avatar-ring">
-      <div class="avatar-inner">
-        <span>🌸</span>
-        <span class="lv-num" id="lv-num">1</span>
-      </div>
+      <svg viewBox="0 0 36 36" fill="none">
+        <circle cx="18" cy="18" r="16" stroke="var(--ln)" stroke-width="2.5"/>
+        <circle id="xp-arc" cx="18" cy="18" r="16" stroke="var(--pk)" stroke-width="2.5"
+          stroke-linecap="round" transform="rotate(-90 18 18)"
+          stroke-dasharray="100.53" stroke-dashoffset="100.53"/>
+      </svg>
+      <div class="avatar-inner"><span style="font-size:11px">🌸</span><span class="lv-n" id="lv-n">1</span></div>
     </div>
-    <div class="chip"><span class="ico">❤️</span><span id="stamina-val">100</span><span style="color:var(--mu);font-size:10px">/100</span></div>
-    <div id="stamina-bar-wrap">
-      <div id="stamina-bar"><div id="stamina-fill" style="width:100%"></div></div>
-      <div id="stamina-text">5分钟恢复1点</div>
-    </div>
-    <div class="chip"><span class="ico">🪙</span><span id="gold-val">0</span></div>
-    <div class="chip"><span class="ico">⭐</span><span id="exp-val">0</span></div>
+    <div class="chip">❤️ <span id="hp-val">100</span><span style="color:var(--mu);font-size:9px">/100</span></div>
+    <div id="hp-wrap"><div id="hp-bar"><div id="hp-fill"></div></div><div id="hp-txt">5min/+1</div></div>
+    <div class="chip">🪙 <span id="gold-val">0</span></div>
+    <div class="chip chip-dia" id="dia-chip" style="display:none">💎 <span id="dia-val">0</span></div>
   </div>
-  <div id="stamina-timer"></div>
+  <div id="stamina-recover-hint"></div>
 
   <!-- 订单栏 -->
-  <div id="orders-area"></div>
+  <div id="orders-wrap">
+    <div id="orders-row"></div>
+  </div>
 
-  <!-- 合成盘 -->
-  <div id="board-area">
-    <div id="board"></div>
+  <!-- 主内容 -->
+  <div id="main-content">
+
+    <!-- 合成页 -->
+    <div class="tab-page active" id="page-merge">
+      <div id="board-area"><div id="board"></div></div>
+    </div>
+
+    <!-- 花园页 -->
+    <div class="tab-page" id="page-garden">
+      <div id="garden-header">
+        <h2>🌷 花园建设</h2>
+        <span id="garden-gold-chip">🪙 <span id="gg-val">0</span></span>
+      </div>
+      <div id="zones-grid"></div>
+      <!-- 区域详情 -->
+      <div id="zone-detail">
+        <div id="zd-header">
+          <div id="zd-back">←</div>
+          <div id="zd-title">区域</div>
+          <div id="zd-gold">🪙 <span id="zd-gold-val">0</span></div>
+        </div>
+        <div id="zd-prog-bar">
+          <div class="lbl">清理进度</div>
+          <div id="zd-prog-track"><div id="zd-prog-fill" style="width:0%"></div></div>
+        </div>
+        <div id="tiles-grid"></div>
+      </div>
+    </div>
+
+    <!-- 活动页 (P2) -->
+    <div class="tab-page" id="page-activity">
+      <div id="activity-page"></div>
+    </div>
+
+  </div>
+
+  <!-- 底部导航 -->
+  <div id="bottom-nav">
+    <button class="nav-btn active" id="nav-merge" data-tab="merge">
+      <span class="nav-ico">🏠</span><span>合成</span>
+    </button>
+    <button class="nav-btn" id="nav-garden" data-tab="garden">
+      <span class="nav-ico">🌷</span><span>花园</span>
+    </button>
+    <button class="nav-btn" id="nav-activity" data-tab="activity">
+      <span class="nav-ico">🎪</span><span>活动</span>
+    </button>
   </div>
 
 </div>
 
 <!-- 幽灵 -->
-<div id="ghost"><div class="item" id="ghost-item"></div></div>
+<div id="ghost"><div id="ghost-item"></div></div>
 
 <!-- Toast -->
 <div id="toast"></div>
 
 <!-- 奖励弹窗 -->
-<div id="reward-modal">
-  <div class="reward-box">
+<div class="modal-mask" id="reward-modal">
+  <div class="modal-box">
     <h3>🎉 订单完成！</h3>
-    <div class="reward-items" id="reward-items"></div>
-    <div class="reward-nums" id="reward-nums"></div>
-    <button class="reward-ok" id="reward-ok">太棒了！</button>
+    <div class="reward-big" id="rwd-big"></div>
+    <div class="reward-nums" id="rwd-nums"></div>
+    <button class="modal-ok" id="rwd-ok">太棒了！</button>
   </div>
 </div>
 
 <!-- 升级弹窗 -->
-<div id="levelup-modal">
-  <div class="levelup-box">
-    <h2>✨ 升级啦！</h2>
-    <p id="levelup-text">达到 Lv.2，体力已回满！</p>
-    <button id="levelup-ok">继续</button>
+<div class="modal-mask" id="levelup-modal">
+  <div class="modal-box">
+    <h3>✨ 升级啦！</h3>
+    <div class="modal-sub" id="lv-sub"></div>
+    <button class="modal-ok" id="lv-ok">继续！</button>
+  </div>
+</div>
+
+<!-- 解锁提示弹窗 -->
+<div class="modal-mask" id="unlock-modal">
+  <div class="modal-box">
+    <h3>🔓 新功能解锁！</h3>
+    <div class="modal-sub" id="unlock-sub"></div>
+    <button class="modal-ok" id="unlock-ok">好的！</button>
+  </div>
+</div>
+
+<!-- 花园确认弹窗 -->
+<div class="modal-mask" id="garden-confirm-modal">
+  <div class="modal-box">
+    <h3 id="gc-title">确认操作</h3>
+    <div class="modal-sub" id="gc-sub"></div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="modal-ok" style="background:#eee;color:var(--ik)" id="gc-cancel">取消</button>
+      <button class="modal-ok" id="gc-ok">确认</button>
+    </div>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
-//  配置常量
-// ═══════════════════════════════════════════════
-const ROWS = 9, COLS = 7, CELLS = ROWS * COLS;
-const MAX_FLOWER = 5;
-const STAMINA_MAX = 100;
-const STAMINA_COST = 5;          // 点花圃消耗
-const STAMINA_RECOVER_MS = 5 * 60 * 1000; // 5分钟
-const DEMO_RECOVER_MS = 30 * 1000;         // demo加速：30秒
+// ══════════════════════════════════════════════════════════
+//  数据配置 (P0 + P1 + P2)
+// ══════════════════════════════════════════════════════════
 
-const FLOWER_NAMES = ['', '小花苗', '小花朵', '盛开花', '稀有花', '梦幻花'];
-const FLOWER_EMOJI = ['', '🌱', '🌸', '🌺', '🌷', '🌹'];
-const FLOWER_CLASS = ['', 'c1', 'c2', 'c3', 'c4', 'c5'];
-const GOLD_BY_LV  = [0, 5, 15, 40, 100, 250];
-const EXP_BY_LV   = [0, 2, 5, 12, 30, 80];
-const LV_EXP_NEED = [0, 0, 20, 50, 100, 200]; // index=level
-const LV_MAX = 5;
+// 花朵路线（P0）
+const FLOWER = {
+  type:'flower',
+  names:['','小花苗','小花朵','盛开花','稀有花','梦幻花'],
+  emoji:['','🌱','🌸','🌺','🌷','🌹'],
+  cls:  ['','c1','c2','c3','c4','c5'],
+  gold: [0,5,15,40,100,250],
+  exp:  [0,2,5,12,30,80],
+  maxLv:5
+};
+// 灌木路线（P1，需解锁）
+const SHRUB = {
+  type:'shrub',
+  names:['','小树苗','绿植','开花灌木','彩色灌木','魔法灌木'],
+  emoji:['','🌿','🍃','🌳','🌲','✨🌲'],
+  cls:  ['','s1','s2','s3','s4','s5'],
+  gold: [0,8,25,60,150,350],
+  exp:  [0,3,8,20,45,100],
+  maxLv:5
+};
+// 果树路线（P1，需解锁）
+const TREE = {
+  type:'tree',
+  names:['','果核','小树苗','开花果树','结果树','黄金果树'],
+  emoji:['','🌰','🌱','🌸','🍎','🏆'],
+  cls:  ['','t1','t2','t3','t4','t5'],
+  gold: [0,10,30,80,200,500],
+  exp:  [0,4,10,25,60,150],
+  maxLv:5
+};
+const ROUTES = {flower:FLOWER, shrub:SHRUB, tree:TREE};
 
-// 订单需求等级范围（根据玩家等级）
-function orderMaxLv(playerLv){
-  if(playerLv <= 2) return 2;
-  if(playerLv <= 4) return 3;
-  return 4;
-}
+// 经验需求（P0+P1）
+const LV_EXP = [0,0,20,50,100,200,350,550,800,1100,1500,2000,2600,3300,4100,5000];
+const LV_MAX_P0 = 5, LV_MAX = 15;
 
-// ═══════════════════════════════════════════════
+// 体力
+const STAM_MAX = 100, STAM_COST = 5;
+const RECOVER_MS = 30*1000; // demo: 30s/点
+
+// P1 花园区域
+const ZONES = [
+  {id:'Z01',name:'入口空地',emoji:'🏡',unlockLv:1, cleanCost:50,
+   tiles:[
+    {id:'Z01_T01',facId:'fac_001',facName:'育苗架',facEmoji:'🌿',facCost:300,type:'functional',desc:'解锁第3个花类产出位'},
+    {id:'Z01_T02',facId:'deco_001',facName:'小风车',facEmoji:'🎡',facCost:150,type:'deco'},
+    {id:'Z01_T03',facId:'deco_002',facName:'木篱笆',facEmoji:'🪵',facCost:100,type:'deco'},
+    {id:'Z01_T04',facId:'deco_003',facName:'花丛',facEmoji:'💐',facCost:80,type:'deco'},
+    {id:'Z01_T05',facId:'deco_003',facName:'花丛',facEmoji:'💐',facCost:80,type:'deco'},
+    {id:'Z01_T06',facId:'deco_002',facName:'木篱笆',facEmoji:'🪵',facCost:100,type:'deco'},
+   ]},
+  {id:'Z02',name:'花圃区',emoji:'🌸',unlockLv:3, cleanCost:100,
+   tiles:[
+    {id:'Z02_T01',facId:'fac_002',facName:'灌木苗圃',facEmoji:'🌳',facCost:500,type:'functional',desc:'解锁灌木合成路线'},
+    {id:'Z02_T02',facId:'fac_003',facName:'花圃架',facEmoji:'🌻',facCost:400,type:'functional',desc:'解锁第4个花类产出位'},
+    {id:'Z02_T03',facId:'deco_004',facName:'小路灯',facEmoji:'🏮',facCost:120,type:'deco'},
+    {id:'Z02_T04',facId:'deco_005',facName:'秋千',facEmoji:'🎠',facCost:250,type:'deco'},
+    {id:'Z02_T05',facId:'deco_003',facName:'花丛',facEmoji:'💐',facCost:80,type:'deco'},
+   ]},
+  {id:'Z03',name:'果树区',emoji:'🍎',unlockLv:5, cleanCost:180,
+   tiles:[
+    {id:'Z03_T01',facId:'fac_004',facName:'果树苗圃',facEmoji:'🌴',facCost:800,type:'functional',desc:'解锁果树合成路线'},
+    {id:'Z03_T02',facId:'deco_006',facName:'鸟屋',facEmoji:'🏠',facCost:180,type:'deco'},
+    {id:'Z03_T03',facId:'deco_006',facName:'鸟屋',facEmoji:'🏠',facCost:180,type:'deco'},
+    {id:'Z03_T04',facId:'deco_003',facName:'花丛',facEmoji:'💐',facCost:80,type:'deco'},
+   ]},
+  {id:'Z04',name:'水景区',emoji:'⛲',unlockLv:8, cleanCost:300,
+   tiles:[
+    {id:'Z04_T01',facId:'fac_005',facName:'喷泉角',facEmoji:'⛲',facCost:600,type:'functional',desc:'解锁限时订单槽'},
+    {id:'Z04_T02',facId:'deco_007',facName:'石凳',facEmoji:'🪑',facCost:100,type:'deco'},
+    {id:'Z04_T03',facId:'deco_007',facName:'石凳',facEmoji:'🪑',facCost:100,type:'deco'},
+    {id:'Z04_T04',facId:'deco_004',facName:'小路灯',facEmoji:'🏮',facCost:120,type:'deco'},
+   ]},
+  {id:'Z05',name:'星光花廊',emoji:'✨',unlockLv:12, cleanCost:500,
+   tiles:[
+    {id:'Z05_T01',facId:'deco_008',facName:'星星灯串',facEmoji:'🌟',facCost:300,type:'deco'},
+    {id:'Z05_T02',facId:'deco_008',facName:'星星灯串',facEmoji:'🌟',facCost:300,type:'deco'},
+    {id:'Z05_T03',facId:'deco_005',facName:'秋千',facEmoji:'🎠',facCost:250,type:'deco'},
+   ]},
+];
+
+// P2 活动
+const ACTIVITIES = [
+  {id:'p2_001',name:'花圃丰收季',desc:'花圃点击后产出数量 ×2！',badge:'进行中',progress:0,goal:0,type:'buff'},
+  {id:'p2_002',name:'订单冲刺',desc:'完成 10 个订单领取钻石奖励',badge:'进行中',progress:0,goal:10,type:'count',reward:'30 💎'},
+  {id:'p2_003',name:'限时花种收集',desc:'合成指定高级花朵获得积分',badge:'即将开始',progress:0,goal:5,type:'count',reward:'限定装饰 + 20 💎'},
+];
+
+// ══════════════════════════════════════════════════════════
 //  游戏状态
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+const ROWS=9, COLS=7, CELLS=63;
 const state = {
-  board: Array(CELLS).fill(null), // null | {type:'flower'|'fb', level:1-5, id}
-  stamina: STAMINA_MAX,
+  board: Array(CELLS).fill(null),
+  stamina: STAM_MAX,
   gold: 0,
   exp: 0,
+  dia: 0,
   playerLevel: 1,
-  orders: [],    // [{id, demands:[{level,need,done}], gold, exp, status:'pending'|'ready'}]
+  orders: [],
+  timedOrder: null,     // P1 限时订单（喷泉角解锁后）
   nextId: 1,
   lastRecoverTime: Date.now(),
+  // 解锁的合成路线
+  unlockedRoutes: {flower:true, shrub:false, tree:false},
+  // 花圃产出位数量（P0=2，育苗架+3，花圃架+4）
+  flowerBedCount: 2,
+  shrubBedCount: 0,
+  treeBedCount: 0,
+  // P1 花园地块状态 {tileId: 'wrecked'|'cleaned'|'arranged'}
+  tileStates: {},
+  // P1 解锁的功能设施
+  arrangedFacilities: [],
+  // P2 活动进度
+  actProgress: {p2_002:0, p2_003:0},
+  // 有喷泉角？
+  fountainUnlocked: false,
+  // 花圃丰收季 buff？
+  harvestBuff: false,
 };
-
-// 初始花圃放置
-function initGame(){
-  state.board[7]  = {type:'fb', level:1, id:uid()};  // row1 col0
-  state.board[56] = {type:'fb', level:1, id:uid()};  // row8 col0
-  genOrders(3);
-}
 
 function uid(){ return state.nextId++; }
 
-// ═══════════════════════════════════════════════
-//  订单生成
-// ═══════════════════════════════════════════════
-function genOrder(){
-  const maxLv = orderMaxLv(state.playerLevel);
-  const count = Math.random() < 0.5 ? 1 : 2;
-  const demands = [];
-  for(let i=0;i<count;i++){
-    const lv = Math.floor(Math.random()*(maxLv))+1;
-    const need = Math.random() < 0.6 ? 1 : 2;
-    demands.push({level:lv, need, done:0});
+// 初始化
+function initGame(){
+  // 初始 2 个花圃放到合成盘
+  placeFBs();
+  genOrders(3);
+  // 初始化所有地块为 wrecked
+  ZONES.forEach(z=>z.tiles.forEach(t=>{ state.tileStates[t.id]='wrecked'; }));
+}
+
+function placeFBs(){
+  // 先清除旧的 fb
+  for(let i=0;i<CELLS;i++){
+    if(state.board[i]?.type==='fb') state.board[i]=null;
   }
-  let g=0, e=0;
-  demands.forEach(d=>{ g+=GOLD_BY_LV[d.level]*d.need; e+=EXP_BY_LV[d.level]*d.need; });
-  return {id:uid(), demands, gold:g, exp:e, status:'pending'};
+  // 花类产出位
+  const flowerSlots=[7,56,14,49]; // 最多4个
+  for(let i=0;i<Math.min(state.flowerBedCount,flowerSlots.length);i++){
+    const idx=flowerSlots[i];
+    if(!state.board[idx]) state.board[idx]={type:'fb',route:'flower',level:1,id:uid()};
+  }
+  // 灌木产出位
+  if(state.shrubBedCount>0){
+    const si=findEmptyCell();
+    if(si>=0) state.board[si]={type:'fb',route:'shrub',level:1,id:uid()};
+  }
+  // 果树产出位
+  if(state.treeBedCount>0){
+    const ti=findEmptyCell();
+    if(ti>=0) state.board[ti]={type:'fb',route:'tree',level:1,id:uid()};
+  }
 }
 
-function genOrders(n){
-  for(let i=0;i<n;i++) state.orders.push(genOrder());
+function findEmptyCell(){
+  for(let i=CELLS-1;i>=0;i--) if(!state.board[i]) return i;
+  return -1;
 }
 
-// ═══════════════════════════════════════════════
-//  渲染
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+//  订单生成
+// ══════════════════════════════════════════════════════════
+function orderMaxLv(lv){ return lv<=2?2:lv<=4?3:4; }
+
+function genOneOrder(isTimed=false){
+  const maxLv=orderMaxLv(state.playerLevel);
+  const count=Math.random()<.55?1:2;
+  const avail=Object.keys(state.unlockedRoutes).filter(k=>state.unlockedRoutes[k]);
+  const demands=[];
+  for(let i=0;i<count;i++){
+    const route=avail[Math.floor(Math.random()*avail.length)];
+    const lv=Math.floor(Math.random()*maxLv)+1;
+    const need=Math.random()<.6?1:2;
+    demands.push({route,level:lv,need,done:0});
+  }
+  let g=0,e=0;
+  demands.forEach(d=>{
+    const R=ROUTES[d.route];
+    g+=R.gold[d.level]*d.need;
+    e+=R.exp[d.level]*d.need;
+  });
+  if(isTimed){ g=Math.ceil(g*1.5); e=Math.ceil(e*1.5); }
+  return {id:uid(),demands,gold:g,exp:e,
+    status:'pending',
+    isTimed,
+    timeLeft:isTimed?600:null,  // 10min
+    genTime:Date.now()};
+}
+
+function genOrders(n){ for(let i=0;i<n;i++) state.orders.push(genOneOrder()); }
+
+function checkOrderReady(order){
+  const avail={};
+  state.board.forEach(it=>{
+    if(it&&it.type!=='fb') avail[it.route+'_'+it.level]=(avail[it.route+'_'+it.level]||0)+1;
+  });
+  const met=order.demands.every(d=>(avail[d.route+'_'+d.level]||0)>=d.need);
+  order.status=met?'ready':'pending';
+}
+function checkAllOrders(){ [...state.orders,(state.timedOrder||null)].filter(Boolean).forEach(checkOrderReady); }
+
+// ══════════════════════════════════════════════════════════
+//  渲染 HUD
+// ══════════════════════════════════════════════════════════
 function renderHud(){
-  document.getElementById('stamina-val').textContent = state.stamina;
-  document.getElementById('gold-val').textContent = state.gold;
-  document.getElementById('exp-val').textContent = state.exp;
-  document.getElementById('lv-num').textContent = state.playerLevel;
-  const fill = (state.stamina / STAMINA_MAX * 100).toFixed(1);
-  document.getElementById('stamina-fill').style.width = fill + '%';
-  // EXP环
-  const curLvExp = LV_EXP_NEED[state.playerLevel] || 0;
-  const nextLvExp = LV_EXP_NEED[state.playerLevel + 1] || (LV_EXP_NEED[LV_MAX] + 1);
-  const pct = state.playerLevel >= LV_MAX ? 100
-    : Math.min(100, ((state.exp - curLvExp) / (nextLvExp - curLvExp) * 100));
-  document.getElementById('avatar-ring').style.background =
-    `conic-gradient(var(--pk) ${pct*3.6}deg, var(--ln) 0)`;
+  document.getElementById('hp-val').textContent=state.stamina;
+  document.getElementById('gold-val').textContent=state.gold;
+  document.getElementById('lv-n').textContent=state.playerLevel;
+  document.getElementById('hp-fill').style.width=(state.stamina/STAM_MAX*100)+'%';
+  // dia chip
+  const diaChip=document.getElementById('dia-chip');
+  diaChip.style.display=state.dia>0?'flex':'none';
+  document.getElementById('dia-val').textContent=state.dia;
+  // XP 环
+  const curLvExp=LV_EXP[state.playerLevel]||0;
+  const nextLvExp=LV_EXP[state.playerLevel+1]||(LV_EXP[LV_MAX]+1);
+  const pct=state.playerLevel>=LV_MAX?1:Math.min(1,(state.exp-curLvExp)/(nextLvExp-curLvExp));
+  const circum=100.53;
+  document.getElementById('xp-arc').style.strokeDashoffset=circum*(1-pct);
+  // 恢复提示
+  if(state.stamina<STAM_MAX){
+    const elapsed=Date.now()-state.lastRecoverTime;
+    const remain=RECOVER_MS-elapsed%RECOVER_MS;
+    document.getElementById('stamina-recover-hint').textContent=
+      `体力 ${state.stamina}/100 · ${Math.ceil(remain/1000)}s 后恢复 (Demo加速)`;
+  } else {
+    document.getElementById('stamina-recover-hint').textContent='';
+  }
 }
 
+// ══════════════════════════════════════════════════════════
+//  渲染订单栏
+// ══════════════════════════════════════════════════════════
 function renderOrders(){
-  const area = document.getElementById('orders-area');
-  area.innerHTML = '';
-  state.orders.forEach((order, idx) => {
+  const row=document.getElementById('orders-row');
+  row.innerHTML='';
+  const all=[...state.orders];
+  if(state.timedOrder) all.push(state.timedOrder);
+  all.forEach((order,idx)=>{
     checkOrderReady(order);
-    const slot = document.createElement('div');
-    slot.className = 'order-slot' + (order.status==='ready' ? ' ready' : '');
-    // 需求物品
-    const needDiv = document.createElement('div');
-    needDiv.className = 'order-need';
-    order.demands.forEach(d => {
-      const f = document.createElement('div');
-      f.className = 'flower-req';
-      f.style.background = `linear-gradient(135deg,var(--${FLOWER_CLASS[d.level]}a),var(--${FLOWER_CLASS[d.level]}b))`;
-      f.textContent = FLOWER_EMOJI[d.level];
-      if(d.need > 1 || d.done > 0){
-        const cnt = document.createElement('span');
-        cnt.className = 'cnt';
-        cnt.textContent = (d.done > 0 ? d.done+'/' : '') + d.need;
-        f.appendChild(cnt);
-      }
-      needDiv.appendChild(f);
-    });
-    slot.appendChild(needDiv);
-    // 奖励
-    const rwd = document.createElement('div');
-    rwd.className = 'order-rwd';
-    rwd.textContent = `🪙${order.gold} ⭐${order.exp}`;
-    slot.appendChild(rwd);
-    // 按钮
-    const btn = document.createElement('button');
-    btn.className = 'order-btn ' + order.status;
-    btn.textContent = order.status === 'ready' ? '✅ 完成' : '需求中';
-    if(order.status === 'ready'){
-      btn.addEventListener('click', ()=>completeOrder(idx));
+    const el=document.createElement('div');
+    el.className='ord'+(order.isTimed?' timed':'')+(order.status==='ready'?' ready':'');
+    if(order.isTimed){
+      const lb=document.createElement('div');
+      lb.className='ord-label';
+      lb.textContent='⏱ 限时';
+      el.appendChild(lb);
+      const tm=document.createElement('div');
+      tm.className='ord-timer';
+      const min=Math.floor((order.timeLeft||0)/60),sec=Math.floor((order.timeLeft||0)%60);
+      tm.textContent=`${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+      el.appendChild(tm);
     }
-    slot.appendChild(btn);
-    area.appendChild(slot);
+    const needDiv=document.createElement('div');
+    needDiv.className='ord-needs';
+    order.demands.forEach(d=>{
+      const R=ROUTES[d.route];
+      const chip=document.createElement('div');
+      chip.className='flower-chip';
+      chip.style.background=`linear-gradient(135deg,var(--${R.cls[d.level]}a),var(--${R.cls[d.level]}b))`;
+      chip.textContent=R.emoji[d.level];
+      if(d.need>1){const c=document.createElement('span');c.className='fc';c.textContent='×'+d.need;chip.appendChild(c);}
+      needDiv.appendChild(chip);
+    });
+    el.appendChild(needDiv);
+    const rwd=document.createElement('div');
+    rwd.className='ord-rwd';
+    rwd.textContent=`🪙${order.gold} ⭐${order.exp}`+(order.isTimed?' ×1.5':'');
+    el.appendChild(rwd);
+    const btn=document.createElement('button');
+    if(order.status==='expired'){
+      btn.className='ord-btn pending'; btn.textContent='已超时';
+    } else {
+      btn.className='ord-btn'+(order.status==='ready'?(order.isTimed?' timed-ready':' ready'):' pending');
+      btn.textContent=order.status==='ready'?(order.isTimed?'限时完成':'✅ 完成'):'需求中';
+      if(order.status==='ready'){
+        const oi=idx;
+        btn.addEventListener('click',()=>completeOrder(oi));
+      }
+    }
+    el.appendChild(btn);
+    row.appendChild(el);
   });
 }
 
+// ══════════════════════════════════════════════════════════
+//  渲染合成盘
+// ══════════════════════════════════════════════════════════
 function renderBoard(){
-  const board = document.getElementById('board');
-  // 保留已有cell避免重绘闪烁
-  if(board.children.length !== CELLS){
-    board.innerHTML = '';
+  const board=document.getElementById('board');
+  if(board.children.length!==CELLS){
+    board.innerHTML='';
     for(let i=0;i<CELLS;i++){
-      const cell = document.createElement('div');
-      cell.className = 'cell';
-      cell.dataset.idx = i;
-      board.appendChild(cell);
+      const c=document.createElement('div');
+      c.className='cell'; c.dataset.idx=i;
+      board.appendChild(c);
     }
   }
   for(let i=0;i<CELLS;i++){
-    const cell = board.children[i];
-    const item = state.board[i];
-    cell.classList.toggle('has', !!item);
-    // 清除旧内容
-    cell.innerHTML = '';
+    const cell=board.children[i];
+    const item=state.board[i];
+    cell.classList.toggle('has',!!item);
+    cell.innerHTML='';
     if(!item) continue;
-    const div = document.createElement('div');
-    if(item.type === 'fb'){
-      div.className = 'item fb';
-      div.textContent = '🌿';
-      div.dataset.cellIdx = i;
-      const lv = document.createElement('span');
-      lv.className = 'lv-badge'; lv.textContent = item.level;
-      div.appendChild(lv);
-      const lb = document.createElement('span');
-      lb.className = 'fb-label'; lb.textContent = '花圃';
-      div.appendChild(lb);
+    const div=document.createElement('div');
+    if(item.type==='fb'){
+      const R=ROUTES[item.route];
+      div.className='item fb';
+      div.textContent=item.route==='flower'?'🌿':(item.route==='shrub'?'🌳':'🌴');
+      div.dataset.cellIdx=i;
+      const lb=document.createElement('span');lb.className='fb-lb';
+      lb.textContent=R.names[1].slice(0,3)+'圃';div.appendChild(lb);
     } else {
-      div.className = 'item ' + FLOWER_CLASS[item.level];
-      div.textContent = FLOWER_EMOJI[item.level];
-      div.dataset.cellIdx = i;
-      const lv = document.createElement('span');
-      lv.className = 'lv-badge'; lv.textContent = item.level;
-      div.appendChild(lv);
-      if(item.level >= MAX_FLOWER){
-        const mx = document.createElement('span');
-        mx.className = 'max-badge'; mx.textContent = 'MAX';
-        div.appendChild(mx);
-      }
+      const R=ROUTES[item.route];
+      div.className='item '+R.cls[item.level];
+      div.textContent=R.emoji[item.level];
+      div.dataset.cellIdx=i;
+      const lv=document.createElement('span');lv.className='lv-b';lv.textContent=item.level;div.appendChild(lv);
+      if(item.level>=R.maxLv){const mx=document.createElement('span');mx.className='mx-b';mx.textContent='MAX';div.appendChild(mx);}
     }
     cell.appendChild(div);
   }
+  bindDrag();
 }
 
 function render(){
   renderHud();
   renderOrders();
   renderBoard();
-  bindDrag();
+  renderGardenGold();
 }
 
-// ═══════════════════════════════════════════════
-//  拖拽系统（Pointer Events + releasePointerCapture）
-// ═══════════════════════════════════════════════
-let dragState = null;
-const ghost = document.getElementById('ghost');
-const ghostItem = document.getElementById('ghost-item');
+// ══════════════════════════════════════════════════════════
+//  拖拽系统（Pointer Events, releasePointerCapture）
+// ══════════════════════════════════════════════════════════
+let dragState=null;
+const ghost=document.getElementById('ghost');
+const ghostItem=document.getElementById('ghost-item');
 
 function bindDrag(){
-  document.querySelectorAll('#board .item').forEach(el => {
-    el.addEventListener('pointerdown', onPointerDown, {passive:false});
+  document.querySelectorAll('#board .item').forEach(el=>{
+    el.addEventListener('pointerdown',startDrag,{passive:false});
   });
 }
 
-function onPointerDown(e){
+function startDrag(e){
   e.preventDefault();
   if(e.target.releasePointerCapture) e.target.releasePointerCapture(e.pointerId);
-  const cellIdx = parseInt(e.currentTarget.dataset.cellIdx);
-  const item = state.board[cellIdx];
+  const cellIdx=parseInt(e.currentTarget.dataset.cellIdx);
+  const item=state.board[cellIdx];
   if(!item) return;
+  // 花圃点击
+  if(item.type==='fb'){ harvestFB(cellIdx); return; }
+  dragState={from:cellIdx,item};
+  const R=ROUTES[item.route];
+  ghostItem.className='item '+R.cls[item.level];
+  ghostItem.textContent=R.emoji[item.level];
+  ghost.style.left=e.clientX+'px'; ghost.style.top=e.clientY+'px';
+  ghost.style.display='block';
 
-  // 花圃：点击产出
-  if(item.type === 'fb'){
-    harvestFlowerbed(cellIdx);
-    return;
+  function move(ev){
+    ghost.style.left=ev.clientX+'px'; ghost.style.top=ev.clientY+'px';
+    document.querySelectorAll('.cell.drag-over').forEach(c=>c.classList.remove('drag-over'));
+    const ci=cellAtPoint(ev.clientX,ev.clientY);
+    if(ci>=0&&ci!==dragState.from) document.querySelector(`#board .cell[data-idx="${ci}"]`)?.classList.add('drag-over');
   }
-
-  // 满级不可拖到其他物品（但可以移动位置）
-  dragState = { fromCell: cellIdx, item, startX: e.clientX, startY: e.clientY };
-
-  // 显示幽灵
-  ghostItem.className = 'item ' + FLOWER_CLASS[item.level];
-  ghostItem.textContent = FLOWER_EMOJI[item.level];
-  ghost.style.left = e.clientX + 'px';
-  ghost.style.top  = e.clientY + 'px';
-  ghost.style.display = 'block';
-
-  document.addEventListener('pointermove', onPointerMove);
-  document.addEventListener('pointerup', onPointerUp);
-  document.addEventListener('pointercancel', onPointerCancel);
+  function up(ev){
+    const from=dragState?dragState.from:cellIdx;
+    const ci=cellAtPoint(ev.clientX,ev.clientY);
+    ghost.style.display='none';
+    document.querySelectorAll('.cell.drag-over').forEach(c=>c.classList.remove('drag-over'));
+    dragState=null;
+    document.removeEventListener('pointermove',move);
+    document.removeEventListener('pointerup',up);
+    document.removeEventListener('pointercancel',up);
+    if(ci<0||ci===from) return;
+    const toItem=state.board[ci];
+    if(toItem&&toItem.type!=='fb') tryMerge(from,ci);
+    else if(!toItem){ state.board[ci]=state.board[from]; state.board[from]=null; render(); }
+  }
+  document.addEventListener('pointermove',move);
+  document.addEventListener('pointerup',up);
+  document.addEventListener('pointercancel',up);
 }
 
-function getElementAtPoint(x, y){
-  ghost.style.display = 'none';
-  const el = document.elementFromPoint(x, y);
-  ghost.style.display = 'block';
-  return el;
-}
-
-function getCellIdxAtPoint(x, y){
-  const el = getElementAtPoint(x, y);
+function cellAtPoint(x,y){
+  ghost.style.display='none';
+  const el=document.elementFromPoint(x,y);
+  ghost.style.display='block';
   if(!el) return -1;
-  const cell = el.closest('.cell');
-  if(!cell) return -1;
-  return parseInt(cell.dataset.idx);
+  const c=el.closest('.cell');
+  return c?parseInt(c.dataset.idx):-1;
 }
 
-function onPointerMove(e){
-  if(!dragState) return;
-  ghost.style.left = e.clientX + 'px';
-  ghost.style.top  = e.clientY + 'px';
-
-  // 高亮目标格
-  document.querySelectorAll('.cell.drag-over').forEach(c=>c.classList.remove('drag-over'));
-  const ci = getCellIdxAtPoint(e.clientX, e.clientY);
-  if(ci >= 0 && ci !== dragState.fromCell){
-    document.querySelector(`#board .cell[data-idx="${ci}"]`)?.classList.add('drag-over');
-  }
-}
-
-function onPointerUp(e){
-  if(!dragState) return;
-  const ci = getCellIdxAtPoint(e.clientX, e.clientY);
-  endDrag();
-  if(ci < 0 || ci === dragState?.fromCell) return;
-
-  const from = dragState.fromCell;
-  const toItem = state.board[ci];
-
-  if(toItem && toItem.type !== 'fb'){
-    // 尝试合成
-    tryMerge(from, ci);
-  } else if(!toItem) {
-    // 移动到空格
-    state.board[ci] = state.board[from];
-    state.board[from] = null;
-    render();
-  }
-}
-
-// 由于 dragState 在 endDrag 中清空，先保存
-let _lastDragState = null;
-function onPointerDown2(e){} // unused
-
-function onPointerMove_patched(e){
-  if(!dragState) return;
-  ghost.style.left = e.clientX + 'px';
-  ghost.style.top  = e.clientY + 'px';
-  document.querySelectorAll('.cell.drag-over').forEach(c=>c.classList.remove('drag-over'));
-  const ci = getCellIdxAtPoint(e.clientX, e.clientY);
-  if(ci >= 0 && ci !== dragState.fromCell){
-    document.querySelector(`#board .cell[data-idx="${ci}"]`)?.classList.add('drag-over');
-  }
-}
-
-// 修复：在 endDrag 之前保存 fromCell
-function onPointerUp_fixed(e){
-  if(!dragState) return;
-  const from = dragState.fromCell;
-  const ci = getCellIdxAtPoint(e.clientX, e.clientY);
-  endDrag();
-  if(ci < 0 || ci === from) return;
-  const toItem = state.board[ci];
-  if(toItem && toItem.type !== 'fb'){
-    tryMerge(from, ci);
-  } else if(!toItem){
-    state.board[ci] = state.board[from];
-    state.board[from] = null;
-    render();
-  }
-}
-
-function onPointerCancel(){
-  endDrag();
-}
-
-function endDrag(){
-  ghost.style.display = 'none';
-  document.querySelectorAll('.cell.drag-over').forEach(c=>c.classList.remove('drag-over'));
-  document.removeEventListener('pointermove', onPointerMove);
-  document.removeEventListener('pointerup', onPointerUp);
-  document.removeEventListener('pointercancel', onPointerCancel);
-  dragState = null;
-}
-
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 //  合成逻辑
-// ═══════════════════════════════════════════════
-function tryMerge(fromIdx, toIdx){
-  const a = state.board[fromIdx];
-  const b = state.board[toIdx];
-  if(!a || !b) return;
-  if(a.type !== 'flower' || b.type !== 'flower'){
-    showToast('花圃不能合成哦');
-    return;
-  }
-  if(a.level !== b.level){
-    showToast('等级不同，无法合成');
-    return;
-  }
-  if(a.level >= MAX_FLOWER){
-    showToast('已是最高级，无法继续合成');
-    return;
-  }
-  // 合成！
-  const newLv = a.level + 1;
-  state.board[fromIdx] = null;
-  state.board[toIdx] = {type:'flower', level:newLv, id:uid()};
+// ══════════════════════════════════════════════════════════
+function tryMerge(fromIdx,toIdx){
+  const a=state.board[fromIdx], b=state.board[toIdx];
+  if(!a||!b) return;
+  if(a.type==='fb'||b.type==='fb'){ showToast('花圃不能合成哦'); return; }
+  if(a.route!==b.route){ showToast('不同品种无法合成'); return; }
+  if(a.level!==b.level){ showToast('等级不同，无法合成'); return; }
+  const R=ROUTES[a.route];
+  if(a.level>=R.maxLv){ showToast('已是最高级，无法继续合成'); return; }
+  const newLv=a.level+1;
+  state.board[fromIdx]=null;
+  state.board[toIdx]={type:'item',route:a.route,level:newLv,id:uid()};
   render();
-  // 合成动画
-  const cell = document.querySelector(`#board .cell[data-idx="${toIdx}"]`);
-  if(cell){
-    const item = cell.querySelector('.item');
-    if(item){ item.classList.remove('merge-pop'); void item.offsetWidth; item.classList.add('merge-pop'); }
-  }
-  spawnFloat(toIdx, `+${FLOWER_NAMES[newLv]}`, '#f5a0c0');
+  // 合成弹动
+  const cell=document.querySelector(`#board .cell[data-idx="${toIdx}"]`);
+  if(cell){ const it=cell.querySelector('.item'); if(it){it.classList.remove('pop');void it.offsetWidth;it.classList.add('pop');} }
+  spawnFloat(toIdx,`+${R.names[newLv]}`,'#f5a0c0');
   checkAllOrders();
-}
-
-// ═══════════════════════════════════════════════
-//  花圃产出
-// ═══════════════════════════════════════════════
-function harvestFlowerbed(fbIdx){
-  if(state.stamina < STAMINA_COST){
-    showToast('体力不足，休息一下再来吧 💤');
-    return;
-  }
-  // 找相邻空格
-  const row = Math.floor(fbIdx / COLS);
-  const col = fbIdx % COLS;
-  const neighbors = [];
-  [[-1,0],[1,0],[0,-1],[0,1]].forEach(([dr,dc])=>{
-    const r=row+dr, c=col+dc;
-    if(r>=0&&r<ROWS&&c>=0&&c<COLS){
-      const idx=r*COLS+c;
-      if(!state.board[idx]) neighbors.push(idx);
-    }
-  });
-  if(neighbors.length === 0){
-    showToast('周围没有空格，先合一些物品吧');
-    return;
-  }
-  // 扣体力
-  state.stamina = Math.max(0, state.stamina - STAMINA_COST);
-  // 产出到第一个空格
-  const targetIdx = neighbors[0];
-  state.board[targetIdx] = {type:'flower', level:1, id:uid()};
-  render();
-  spawnFloat(targetIdx, '+小花苗', '#8dd0b8');
-  checkAllOrders();
-}
-
-// ═══════════════════════════════════════════════
-//  订单系统
-// ═══════════════════════════════════════════════
-function checkOrderReady(order){
-  // 统计合成盘上的花
-  const available = {};
-  state.board.forEach(item=>{
-    if(item && item.type === 'flower'){
-      available[item.level] = (available[item.level]||0) + 1;
-    }
-  });
-  // 检查每个需求
-  let allMet = true;
-  order.demands.forEach(d=>{
-    const have = available[d.level] || 0;
-    if(have < d.need) allMet = false;
-  });
-  order.status = allMet ? 'ready' : 'pending';
-}
-
-function checkAllOrders(){
-  state.orders.forEach(o=>checkOrderReady(o));
   renderOrders();
+  // P2 活动：合成进度
+  if(a.route==='flower'&&newLv>=3){ state.actProgress.p2_003=(state.actProgress.p2_003||0)+1; renderActivity(); }
 }
 
-function completeOrder(idx){
-  const order = state.orders[idx];
-  if(!order || order.status !== 'ready') return;
+// ══════════════════════════════════════════════════════════
+//  花圃产出
+// ══════════════════════════════════════════════════════════
+function harvestFB(fbIdx){
+  if(state.stamina<STAM_COST){ showToast('体力不足 💤\n等待恢复后再来吧'); return; }
+  const row=Math.floor(fbIdx/COLS), col=fbIdx%COLS;
+  const neighbors=[];
+  [[-1,0],[1,0],[0,-1],[0,1]].forEach(([dr,dc])=>{
+    const r=row+dr,c=col+dc;
+    if(r>=0&&r<ROWS&&c>=0&&c<COLS){ const idx=r*COLS+c; if(!state.board[idx]) neighbors.push(idx); }
+  });
+  if(!neighbors.length){ showToast('周围没有空格\n先合一些物品腾出空间'); return; }
+  state.stamina=Math.max(0,state.stamina-STAM_COST);
+  const fb=state.board[fbIdx];
+  const R=ROUTES[fb.route];
+  const count=state.harvestBuff?2:1; // P2 丰收季 buff
+  for(let n=0;n<count&&n<neighbors.length;n++){
+    state.board[neighbors[n]]={type:'item',route:fb.route,level:1,id:uid()};
+  }
+  render();
+  spawnFloat(neighbors[0],`+${R.names[1]}`,'#8dd0b8');
+  checkAllOrders(); renderOrders();
+}
 
-  // 从合成盘扣除物品
+// ══════════════════════════════════════════════════════════
+//  订单完成
+// ══════════════════════════════════════════════════════════
+function completeOrder(idx){
+  const isTimed=(idx===state.orders.length);
+  const order=isTimed?state.timedOrder:state.orders[idx];
+  if(!order||order.status!=='ready') return;
+  // 扣除物品
   order.demands.forEach(d=>{
-    let need = d.need;
+    let need=d.need;
     for(let i=0;i<CELLS&&need>0;i++){
-      const item = state.board[i];
-      if(item && item.type==='flower' && item.level===d.level){
-        state.board[i] = null;
-        need--;
-      }
+      const it=state.board[i];
+      if(it&&it.type!=='fb'&&it.route===d.route&&it.level===d.level){ state.board[i]=null; need--; }
     }
   });
-
-  // 奖励
-  state.gold += order.gold;
-  state.exp  += order.exp;
-
-  // 显示奖励弹窗
-  showReward(order.gold, order.exp);
-
-  // 刷新订单
-  state.orders.splice(idx, 1);
-  state.orders.push(genOrder());
-
-  // 检查升级
+  state.gold+=order.gold; state.exp+=order.exp;
+  // P2 活动：订单计数
+  state.actProgress.p2_002=(state.actProgress.p2_002||0)+1;
+  showReward(order.gold,order.exp,order.isTimed);
+  // 刷新
+  if(isTimed){ state.timedOrder=genOneOrder(true); }
+  else { state.orders.splice(idx,1,genOneOrder()); }
   checkLevelUp();
   render();
+  renderActivity();
 }
 
-function showReward(gold, exp){
-  document.getElementById('reward-items').textContent = '🪙 金币 + ⭐ 经验';
-  document.getElementById('reward-nums').textContent = `+${gold} 金币   +${exp} 经验`;
-  const modal = document.getElementById('reward-modal');
-  modal.classList.add('show');
+function showReward(gold,exp,isTimed){
+  document.getElementById('rwd-big').textContent='🪙 + 🌟';
+  document.getElementById('rwd-nums').textContent=`+${gold} 金币   +${exp} 经验`+(isTimed?'  (限时 ×1.5)':'');
+  document.getElementById('reward-modal').classList.add('show');
 }
+document.getElementById('rwd-ok').addEventListener('click',()=>document.getElementById('reward-modal').classList.remove('show'));
 
-document.getElementById('reward-ok').addEventListener('click',()=>{
-  document.getElementById('reward-modal').classList.remove('show');
-});
-
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 //  升级
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function checkLevelUp(){
-  if(state.playerLevel >= LV_MAX) return;
-  const need = LV_EXP_NEED[state.playerLevel + 1];
-  if(state.exp >= need){
+  const maxLv=LV_MAX;
+  while(state.playerLevel<maxLv){
+    const need=LV_EXP[state.playerLevel+1];
+    if(state.exp<need) break;
     state.playerLevel++;
-    state.stamina = STAMINA_MAX; // 回满体力
+    state.stamina=STAM_MAX;
     showLevelUp(state.playerLevel);
+    // 解锁花园区域
+    ZONES.forEach(z=>{ if(z.unlockLv===state.playerLevel) showToast(`🎉 ${z.name}已解锁！`); });
   }
 }
-
 function showLevelUp(lv){
-  document.getElementById('levelup-text').textContent = `达到 Lv.${lv}，体力已回满！`;
+  document.getElementById('lv-sub').textContent=`达到 Lv.${lv}！体力已回满 ❤️`;
   document.getElementById('levelup-modal').classList.add('show');
 }
+document.getElementById('lv-ok').addEventListener('click',()=>{ document.getElementById('levelup-modal').classList.remove('show'); render(); });
 
-document.getElementById('levelup-ok').addEventListener('click',()=>{
-  document.getElementById('levelup-modal').classList.remove('show');
-  render();
-});
-
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 //  体力恢复 Timer
-// ═══════════════════════════════════════════════
-const RECOVER_INTERVAL = DEMO_RECOVER_MS; // 30秒 demo加速
-
+// ══════════════════════════════════════════════════════════
 function tickStamina(){
-  if(state.stamina >= STAMINA_MAX) {
-    document.getElementById('stamina-text').textContent = '已满';
-    document.getElementById('stamina-timer').textContent = '';
-    return;
-  }
-  const elapsed = Date.now() - state.lastRecoverTime;
-  const ticks = Math.floor(elapsed / RECOVER_INTERVAL);
-  if(ticks > 0){
-    state.stamina = Math.min(STAMINA_MAX, state.stamina + ticks);
-    state.lastRecoverTime += ticks * RECOVER_INTERVAL;
+  if(state.stamina>=STAM_MAX){ renderHud(); return; }
+  const elapsed=Date.now()-state.lastRecoverTime;
+  const ticks=Math.floor(elapsed/RECOVER_MS);
+  if(ticks>0){
+    state.stamina=Math.min(STAM_MAX,state.stamina+ticks);
+    state.lastRecoverTime+=ticks*RECOVER_MS;
     renderHud();
   }
-  // 显示下次恢复倒计时
-  const remain = RECOVER_INTERVAL - ((Date.now() - state.lastRecoverTime) % RECOVER_INTERVAL);
-  const sec = Math.ceil(remain / 1000);
-  document.getElementById('stamina-text').textContent = `${sec}s后恢复`;
-  document.getElementById('stamina-timer').textContent = `(Demo加速：30秒恢复1体力)`;
+  renderHud();
+}
+setInterval(tickStamina,1000);
+
+// 限时订单倒计时
+function tickTimedOrder(){
+  if(!state.timedOrder) return;
+  const o=state.timedOrder;
+  if(o.timeLeft>0){ o.timeLeft--; }
+  else if(o.status!=='expired'){
+    o.status='expired';
+    setTimeout(()=>{ state.timedOrder=genOneOrder(true); renderOrders(); },2000);
+  }
+  renderOrders();
+}
+setInterval(tickTimedOrder,1000);
+
+// ══════════════════════════════════════════════════════════
+//  P1 花园系统
+// ══════════════════════════════════════════════════════════
+let currentZoneId=null;
+
+function renderGardenGold(){
+  const v=document.getElementById('gg-val'); if(v) v.textContent=state.gold;
+  const v2=document.getElementById('zd-gold-val'); if(v2) v2.textContent=state.gold;
 }
 
-setInterval(tickStamina, 1000);
-
-// ═══════════════════════════════════════════════
-//  UI 工具
-// ═══════════════════════════════════════════════
-let toastTimer = null;
-function showToast(msg, dur=2000){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove('show'), dur);
+function renderGarden(){
+  const grid=document.getElementById('zones-grid');
+  grid.innerHTML='';
+  ZONES.forEach(z=>{
+    const unlocked=state.playerLevel>=z.unlockLv;
+    const cleanedTiles=z.tiles.filter(t=>state.tileStates[t.id]==='cleaned'||state.tileStates[t.id]==='arranged').length;
+    const card=document.createElement('div');
+    card.className='zone-card'+(unlocked?'':' locked');
+    card.innerHTML=`
+      <div class="zone-emoji">${z.emoji}</div>
+      <h3>${z.name}</h3>
+      <div class="zone-sub">${unlocked?`已清理 ${cleanedTiles}/${z.tiles.length}`:`Lv.${z.unlockLv} 解锁`}</div>
+      <div class="zone-prog"><div class="zone-prog-fill" style="width:${unlocked?cleanedTiles/z.tiles.length*100:0}%"></div></div>
+      ${!unlocked?`<div class="lock-badge">🔒 Lv.${z.unlockLv}</div>`:''}
+    `;
+    if(unlocked) card.addEventListener('click',()=>openZone(z.id));
+    grid.appendChild(card);
+  });
+  renderGardenGold();
 }
 
-function spawnFloat(cellIdx, text, color){
-  const cell = document.querySelector(`#board .cell[data-idx="${cellIdx}"]`);
-  if(!cell) return;
-  const rect = cell.getBoundingClientRect();
-  const el = document.createElement('div');
-  el.className = 'float-num';
-  el.textContent = text;
-  el.style.color = color;
-  el.style.left = (rect.left + rect.width/2) + 'px';
-  el.style.top  = (rect.top + rect.height/2) + 'px';
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(), 900);
+function openZone(zoneId){
+  currentZoneId=zoneId;
+  const zone=ZONES.find(z=>z.id===zoneId);
+  document.getElementById('zd-title').textContent=zone.name;
+  renderZoneDetail(zone);
+  document.getElementById('zone-detail').classList.add('show');
 }
 
-// ═══════════════════════════════════════════════
-//  修复 onPointerUp 使用 dragState 已清空的问题
-// ═══════════════════════════════════════════════
-// 覆盖之前有 bug 的 onPointerUp，使用 onPointerUp_fixed
-document.removeEventListener('pointerup', onPointerUp);
-// 重新绑定在 bindDrag 内（下面重写）
+document.getElementById('zd-back').addEventListener('click',()=>{
+  document.getElementById('zone-detail').classList.remove('show');
+  currentZoneId=null;
+  renderGarden();
+});
 
-function bindDrag2(){
-  document.querySelectorAll('#board .item').forEach(el => {
-    // 清除旧监听
-    const clone = el.cloneNode(true);
-    el.parentNode.replaceChild(clone, el);
-    clone.addEventListener('pointerdown', e => {
-      e.preventDefault();
-      if(e.target.releasePointerCapture) e.target.releasePointerCapture(e.pointerId);
-      const cellIdx = parseInt(e.currentTarget.dataset.cellIdx);
-      const item = state.board[cellIdx];
-      if(!item) return;
+function renderZoneDetail(zone){
+  const cleaned=zone.tiles.filter(t=>state.tileStates[t.id]==='cleaned'||state.tileStates[t.id]==='arranged').length;
+  document.getElementById('zd-prog-fill').style.width=(cleaned/zone.tiles.length*100)+'%';
+  const grid=document.getElementById('tiles-grid');
+  grid.innerHTML='';
+  zone.tiles.forEach(tile=>{
+    const ts=state.tileStates[tile.id]||'wrecked';
+    const card=document.createElement('div');
+    card.className='tile-card '+ts;
+    let emoji='🌿',stateLbl='',btnHTML='';
+    if(ts==='wrecked'){
+      emoji='🌾'; stateLbl='狼藉';
+      btnHTML=`<button class="tile-btn cleanup" data-tile="${tile.id}">清理 ${zone.cleanCost}🪙</button>`;
+    } else if(ts==='cleaned'){
+      emoji='🌿'; stateLbl='已清理';
+      const canAfford=state.gold>=tile.facCost;
+      btnHTML=`<button class="tile-btn arrange${canAfford?'':' disabled'}" data-tile="${tile.id}" data-fac="${tile.facId}">布置 ${tile.facCost}🪙</button>`;
+    } else {
+      emoji=tile.facEmoji; stateLbl=tile.facName;
+    }
+    card.innerHTML=`
+      <div class="tile-emoji">${emoji}</div>
+      <div class="tile-name">${ts==='arranged'?tile.facName:(tile.facName)}</div>
+      <div class="tile-state">${stateLbl}</div>
+      ${btnHTML}
+    `;
+    grid.appendChild(card);
+  });
+  // 绑定按钮事件
+  grid.querySelectorAll('.tile-btn.cleanup').forEach(btn=>{
+    btn.addEventListener('click',()=>cleanupTile(zone,btn.dataset.tile));
+  });
+  grid.querySelectorAll('.tile-btn.arrange:not(.disabled)').forEach(btn=>{
+    btn.addEventListener('click',()=>arrangeTile(zone,btn.dataset.tile,btn.dataset.fac));
+  });
+  renderGardenGold();
+}
 
-      if(item.type === 'fb'){
-        harvestFlowerbed(cellIdx);
-        return;
-      }
-
-      dragState = { fromCell: cellIdx, item };
-      ghostItem.className = 'item ' + FLOWER_CLASS[item.level];
-      ghostItem.textContent = FLOWER_EMOJI[item.level];
-      ghost.style.left = e.clientX + 'px';
-      ghost.style.top  = e.clientY + 'px';
-      ghost.style.display = 'block';
-
-      function move(ev){
-        ghost.style.left = ev.clientX + 'px';
-        ghost.style.top  = ev.clientY + 'px';
-        document.querySelectorAll('.cell.drag-over').forEach(c=>c.classList.remove('drag-over'));
-        const ci = getCellIdxAtPoint2(ev.clientX, ev.clientY);
-        if(ci >= 0 && ci !== dragState?.fromCell){
-          document.querySelector(`#board .cell[data-idx="${ci}"]`)?.classList.add('drag-over');
-        }
-      }
-
-      function up(ev){
-        const from = dragState ? dragState.fromCell : cellIdx;
-        const ci = getCellIdxAtPoint2(ev.clientX, ev.clientY);
-        ghost.style.display = 'none';
-        document.querySelectorAll('.cell.drag-over').forEach(c=>c.classList.remove('drag-over'));
-        dragState = null;
-        document.removeEventListener('pointermove', move);
-        document.removeEventListener('pointerup', up);
-        document.removeEventListener('pointercancel', up);
-        if(ci < 0 || ci === from) return;
-        const toItem = state.board[ci];
-        if(toItem && toItem.type !== 'fb'){
-          tryMerge(from, ci);
-        } else if(!toItem){
-          state.board[ci] = state.board[from];
-          state.board[from] = null;
-          render();
-        }
-      }
-
-      document.addEventListener('pointermove', move);
-      document.addEventListener('pointerup', up);
-      document.addEventListener('pointercancel', up);
-    }, {passive:false});
+function cleanupTile(zone,tileId){
+  if(state.gold<zone.cleanCost){ showToast('金币不够\n先完成订单赚金币吧！'); return; }
+  showGardenConfirm(`清理 ${zone.name}地块`,`消耗 ${zone.cleanCost} 🪙 清理狼藉地块，露出干净地面。`,()=>{
+    state.gold-=zone.cleanCost;
+    state.tileStates[tileId]='cleaned';
+    spawnFloatXY(0.5,0.5,`-${zone.cleanCost}🪙`,'#ff6060');
+    showToast('清理完成！可以布置花园啦 🌿');
+    renderZoneDetail(zone);
+    renderGarden();
+    renderHud();
   });
 }
 
-function getCellIdxAtPoint2(x, y){
-  ghost.style.display = 'none';
-  const el = document.elementFromPoint(x, y);
-  ghost.style.display = 'block';
-  if(!el) return -1;
-  const cell = el.closest('.cell');
-  if(!cell) return -1;
-  return parseInt(cell.dataset.idx);
+function arrangeTile(zone,tileId,facId){
+  const tile=zone.tiles.find(t=>t.id===tileId);
+  if(!tile) return;
+  if(state.gold<tile.facCost){ showToast('金币不够\n先完成订单赚金币吧！'); return; }
+  showGardenConfirm(`布置 ${tile.facName}`,`消耗 ${tile.facCost} 🪙 布置"${tile.facName}"。${tile.desc?'\n解锁：'+tile.desc:''}`,()=>{
+    state.gold-=tile.facCost;
+    state.tileStates[tileId]='arranged';
+    if(!state.arrangedFacilities.includes(facId)) state.arrangedFacilities.push(facId);
+    spawnFloatXY(0.5,0.5,`-${tile.facCost}🪙`,'#ff6060');
+    applyFacility(facId,tile);
+    renderZoneDetail(zone);
+    renderGarden();
+    render();
+  });
 }
 
-// 覆盖 bindDrag
-function bindDrag(){ bindDrag2(); }
+function applyFacility(facId,tile){
+  switch(facId){
+    case 'fac_001': // 育苗架 → +花类产出位
+      if(state.flowerBedCount<3){ state.flowerBedCount=3; placeFBs(); showUnlock('新的花类产出位已就位！','现在有 3 个花类花圃可以点击产出小花苗了 🌱'); }
+      break;
+    case 'fac_002': // 灌木苗圃 → 解锁灌木路线
+      if(!state.unlockedRoutes.shrub){
+        state.unlockedRoutes.shrub=true; state.shrubBedCount=1; placeFBs();
+        showUnlock('灌木合成路线已解锁！','新的植物品种可以在合成盘上合成了 🌳');
+      }
+      break;
+    case 'fac_003': // 花圃架 → +花类产出位
+      if(state.flowerBedCount<4){ state.flowerBedCount=4; placeFBs(); showUnlock('新的花类产出位已就位！','现在有 4 个花类花圃可以点击产出了 🌸'); }
+      break;
+    case 'fac_004': // 果树苗圃 → 解锁果树路线
+      if(!state.unlockedRoutes.tree){
+        state.unlockedRoutes.tree=true; state.treeBedCount=1; placeFBs();
+        showUnlock('果树合成路线已解锁！','新的果树品种可以在合成盘上合成了 🍎');
+      }
+      break;
+    case 'fac_005': // 喷泉角 → 限时订单槽
+      if(!state.fountainUnlocked){
+        state.fountainUnlocked=true;
+        state.timedOrder=genOneOrder(true);
+        showUnlock('喷泉角布置完成！','限时订单业务已开通！订单栏新增限时订单槽 ⏱');
+      }
+      break;
+  }
+}
 
-// ═══════════════════════════════════════════════
+// 花园确认弹窗
+let _gardenConfirmCb=null;
+function showGardenConfirm(title,sub,cb){
+  _gardenConfirmCb=cb;
+  document.getElementById('gc-title').textContent=title;
+  document.getElementById('gc-sub').textContent=sub;
+  document.getElementById('garden-confirm-modal').classList.add('show');
+}
+document.getElementById('gc-ok').addEventListener('click',()=>{
+  document.getElementById('garden-confirm-modal').classList.remove('show');
+  if(_gardenConfirmCb){ _gardenConfirmCb(); _gardenConfirmCb=null; }
+});
+document.getElementById('gc-cancel').addEventListener('click',()=>{
+  document.getElementById('garden-confirm-modal').classList.remove('show');
+  _gardenConfirmCb=null;
+});
+
+function showUnlock(title,sub){
+  document.getElementById('unlock-sub').textContent=sub;
+  document.querySelector('#unlock-modal .modal-box h3').textContent='🔓 '+title;
+  document.getElementById('unlock-modal').classList.add('show');
+}
+document.getElementById('unlock-ok').addEventListener('click',()=>document.getElementById('unlock-modal').classList.remove('show'));
+
+// ══════════════════════════════════════════════════════════
+//  P2 活动页
+// ══════════════════════════════════════════════════════════
+function renderActivity(){
+  const page=document.getElementById('activity-page');
+  page.innerHTML='';
+  ACTIVITIES.forEach(act=>{
+    const card=document.createElement('div');
+    card.className='act-card';
+    const prog=state.actProgress[act.id]||0;
+    const pct=act.goal>0?Math.min(100,prog/act.goal*100):100;
+    card.innerHTML=`
+      <span class="act-badge ${act.badge==='进行中'?'active':'coming'}">${act.badge}</span>
+      <h3>${act.name}</h3>
+      <div class="act-desc">${act.desc}</div>
+      ${act.goal>0?`
+        <div class="act-prog">进度：${prog}/${act.goal}</div>
+        <div class="act-bar"><div class="act-bar-fill" style="width:${pct}%"></div></div>
+        ${pct>=100?`<div style="color:var(--gd2);font-size:11px;font-weight:700">🎉 奖励：${act.reward}</div>`:''}
+      `:`<div style="font-size:11px;color:var(--mu)">持续进行中，体验提升</div>`}
+    `;
+    // P2 特殊：丰收季buff
+    if(act.id==='p2_001'&&!state.harvestBuff){
+      const btn=document.createElement('button');
+      btn.style.cssText='border:0;background:var(--mt);color:#2a6040;font-size:11px;font-weight:700;border-radius:8px;padding:5px 14px;cursor:pointer;margin-top:6px';
+      btn.textContent='激活丰收季（消耗 20 💎）';
+      btn.addEventListener('click',()=>{
+        if(state.dia<20){ showToast('钻石不足 💎\n完成订单获得钻石'); return; }
+        state.dia-=20; state.harvestBuff=true; btn.textContent='✅ 已激活（花圃产出 ×2）';
+        btn.disabled=true; showToast('花圃丰收季已激活！花圃产出 ×2 🌱🌱'); renderHud();
+      });
+      card.appendChild(btn);
+    }
+    if(act.id==='p2_002'&&pct>=100){
+      const btn=document.createElement('button');
+      btn.style.cssText='border:0;background:var(--gd);color:#7a4a00;font-size:11px;font-weight:700;border-radius:8px;padding:5px 14px;cursor:pointer;margin-top:6px';
+      btn.textContent='领取奖励 30 💎';
+      btn.addEventListener('click',()=>{
+        state.dia+=30; state.actProgress.p2_002=0; btn.remove();
+        showToast('+30 💎 已收入囊中！'); renderHud(); renderActivity();
+      });
+      card.appendChild(btn);
+    }
+    page.appendChild(card);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+//  底部导航切换
+// ══════════════════════════════════════════════════════════
+document.querySelectorAll('.nav-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const tab=btn.dataset.tab;
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+    document.querySelectorAll('.tab-page').forEach(p=>p.classList.toggle('active',p.id===`page-${tab}`));
+    if(tab==='garden'){ renderGarden(); }
+    if(tab==='activity'){ renderActivity(); }
+  });
+});
+
+// ══════════════════════════════════════════════════════════
+//  工具函数
+// ══════════════════════════════════════════════════════════
+let toastTimer=null;
+function showToast(msg,dur=2200){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+function spawnFloat(cellIdx,text,color){
+  const cell=document.querySelector(`#board .cell[data-idx="${cellIdx}"]`);
+  if(!cell) return;
+  const rect=cell.getBoundingClientRect();
+  spawnFloatXY((rect.left+rect.width/2)/window.innerWidth,(rect.top+rect.height/2)/window.innerHeight,text,color);
+}
+
+function spawnFloatXY(xRatio,yRatio,text,color){
+  const el=document.createElement('div');
+  el.className='float-txt'; el.textContent=text; el.style.color=color;
+  el.style.left=(xRatio*window.innerWidth)+'px';
+  el.style.top=(yRatio*window.innerHeight)+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),950);
+}
+
+// ══════════════════════════════════════════════════════════
 //  启动
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 initGame();
 render();
-tickStamina();
 </script>
 </body>
 </html>
